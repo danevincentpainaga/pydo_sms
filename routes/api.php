@@ -3,6 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\SchoolController;
+use App\Http\Controllers\API\AddressController;
+use App\Http\Controllers\API\ScholarController;
+use App\Http\Controllers\API\ScholarParentsController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,9 +24,17 @@ use App\Http\Controllers\API\AuthController;
 // });
 
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:sanctum')->group(function () {
 
+	Route::get('getProvinces', [ProvinceController::class, 'getProvinces']);
+	Route::get('getSchools/{searched}', [SchoolController::class, 'getSchools']);
+	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
+
+	Route::post('saveScholar', [ScholarController::class, 'saveScholar']);
+
+	Route::post('getMotherList', [ScholarParentsController::class, 'getMotherList']);
+	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
+	
+});
 
 Route::post('login', [AuthController::class, 'login']);

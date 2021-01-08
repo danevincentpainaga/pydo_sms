@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class address extends Model
 {
     use HasFactory;
+
+
+    protected $primaryKey = 'address_id';
+    public $timestamps = false;
+
+    protected $fillable = [
+        'address_id', 'barangay_name', 'municipalityId', 'a_province_id'
+    ];
+
+    public function municipality(){
+    	return $this->hasOne(municipality::class, 'municipality_id', 'municipalityId');
+    }
+
+
 }

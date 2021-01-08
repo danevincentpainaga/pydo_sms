@@ -31,7 +31,9 @@ class CreateScholarsTable extends Migration
             $table->foreign('fatherId')->references('father_details_id')->on('father_details');
             $table->bigInteger('motherId')->unsigned();
             $table->foreign('motherId')->references('mother_details_id')->on('mother_details');
-            $table->string('scholar_status');         
+            $table->string('photo');
+            $table->string('degree');
+            $table->string('scholar_status');
             $table->timestamps();
         });
     }
