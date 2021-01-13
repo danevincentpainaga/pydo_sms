@@ -7,6 +7,7 @@ use App\Http\Controllers\API\SchoolController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\ScholarController;
 use App\Http\Controllers\API\ScholarParentsController;
+use App\Http\Controllers\API\AccademicContractController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::post('getMotherList', [ScholarParentsController::class, 'getMotherList']);
 	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
+
+	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
+	Route::get('getAddedScholars', [ScholarController::class, 'getAddedScholars']);
 	
 });
 

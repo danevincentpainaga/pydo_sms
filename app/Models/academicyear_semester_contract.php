@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class academicyear_semester_contract extends Model
 {
     use HasFactory;
+
+    protected $primaryKey = 'asc_id';
+
+    protected $fillable = [
+        'asc_id', 'semesterId', 'academic_year'
+    ];
+
+    public function semester(){
+    	return $this->hasOne(semester::class, 'semester_id', 'semesterId');
+    }
+
 }

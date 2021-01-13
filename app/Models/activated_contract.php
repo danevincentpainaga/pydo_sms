@@ -9,4 +9,10 @@ class activated_contract extends Model
 {
     use HasFactory;
     protected $table = 'activated_contract';
+
+    protected $primaryKey = 'activated_contract_id';
+
+    protected $fillable = ['ascId'];
+
+
 }
