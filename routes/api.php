@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
 
 	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
-	Route::get('getAddedScholars', [ScholarController::class, 'getAddedScholars']);
+	Route::post('getNewScholars', [ScholarController::class, 'getNewScholars']);
 	
 });
 

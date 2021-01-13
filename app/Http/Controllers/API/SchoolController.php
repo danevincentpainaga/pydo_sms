@@ -9,6 +9,6 @@ use App\Models\school;
 class SchoolController extends Controller
 {
     public function getSchools($searched){
-    	return school::where('school_name', 'like', $searched .'%')->get();
+    	return school::where('school_name', 'LIKE', $searched .'%')->get();
     }
 }

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\scholar;
 use App\Models\father_detail;
 use App\Models\mother_detail;
+use DB;
 
 class ScholarController extends Controller
 {
@@ -81,8 +82,12 @@ class ScholarController extends Controller
         return $s;	
 	}
 
-	public function getAddedScholars(){
-		return scholar::with('school')->get();
+	public function getNewScholars(Request $request)
+	{
+		return scholar::where('scholar_status', 'NEW')
+				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "%{$request->searched}%")
+				->with('school')
+				->get();
 	}
 
 }
