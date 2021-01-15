@@ -71,11 +71,14 @@ class ScholarController extends Controller
         $s->age = $request->age;
         $s->gender = $request->gender;
         $s->schoolId  = $request->schoolId;
+        $s->course_section  = $request->course_section;
+        $s->year_level  = $request->year_level;
         $s->IP = $request->IP;
         $s->fatherId = $fatherId;
         $s->motherId = $motherId;
         $s->degree = $request->degree;
         $s->scholar_status = $request->scholar_status;
+        $s->contract_status = $request->contract_status;
         $s->scholar_asc_id = $request->scholar_asc_id;
         $s->save();
 
@@ -85,8 +88,9 @@ class ScholarController extends Controller
 	public function getNewScholars(Request $request)
 	{
 		return scholar::where('scholar_status', 'NEW')
-				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "%{$request->searched}%")
+				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$request->searched}%")
 				->with('school')
+				->orderBy('scholar_id', 'DESC')
 				->get();
 	}
 
