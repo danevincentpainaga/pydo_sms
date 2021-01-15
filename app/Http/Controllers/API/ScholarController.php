@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\scholar;
 use App\Models\father_detail;
 use App\Models\mother_detail;
+use App\Models\academicyear_semester_contract;
 use DB;
 
 class ScholarController extends Controller
@@ -87,11 +88,41 @@ class ScholarController extends Controller
 
 	public function getNewScholars(Request $request)
 	{
-		return scholar::where('scholar_status', 'NEW')
-				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$request->searched}%")
-				->with('school')
-				->orderBy('scholar_id', 'DESC')
-				->get();
+		return scholar::with(['father', 'mother', 'school', 'academicyear_semester_contract' => function($q){
+			$q->join('semesters', 'semesters.semester_id', '=', 'semesterId');
+		}])
+		->where('scholar_status', 'NEW')
+		->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$request->searched}%")
+		->orderBy('scholar_id', 'DESC')
+		->get();
 	}
 
+	public function getScholars(Request $request)
+	{
+		if ($request->hasAny(['scholar_status', 'searched_name', 'contract_status'])) 
+		{
+			return $this->returnedScholars($request, $request->searched_name);
+		}
+
+		return $this->returnedScholars($request, "");
+	}
+
+	private function returnedScholars($request, $searched_name)
+	{
+		return scholar::with(['father', 'mother', 'school', 'academicyear_semester_contract' => function($q){
+
+			$q->join('semesters', 'semesters.semester_id', '=', 'semesterId');
+
+		}, 'address' => function($q){
+
+			$q->join('municipalities', 'municipalities.municipality_id', '=', 'municipalityId')
+			  ->join('provinces', 'provinces.province_id', '=', 'provinceId');
+
+		}, ])
+		->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
+		->where('scholar_status', 'LIKE',  $request->scholar_status)
+		->where('contract_status', 'LIKE',  $request->contract_status)
+		->where('degree', $request->degree)
+		->get();
+	}
 }

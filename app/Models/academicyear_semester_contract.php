@@ -19,4 +19,8 @@ class academicyear_semester_contract extends Model
     	return $this->hasOne(semester::class, 'semester_id', 'semesterId');
     }
 
+    public function scholar(){
+    	return $this->hasOne(scholar::class, 'scholar_asc_id', 'asc_id');
+    }
+
 }

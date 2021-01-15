@@ -19,4 +19,21 @@ class scholar extends Model
     public function school(){
     	return $this->HasOne(school::class, 'school_id', 'schoolId');
     }
+
+    public function academicyear_semester_contract(){
+    	return $this->HasOne(academicyear_semester_contract::class, 'asc_id', 'scholar_asc_id');
+    }
+
+    public function father(){
+        return $this->HasOne(father_detail::class, 'father_details_id', 'fatherId');
+    }
+
+    public function mother(){
+        return $this->HasOne(mother_detail::class, 'mother_details_id', 'motherId');
+    }
+
+    public function address(){
+        return $this->HasOne(address::class, 'address_id', 'addressId');
+    }
+
 }
