@@ -8,6 +8,7 @@ use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\ScholarController;
 use App\Http\Controllers\API\ScholarParentsController;
 use App\Http\Controllers\API\AccademicContractController;
+use App\Http\Controllers\API\ProvinceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,8 +28,9 @@ use App\Http\Controllers\API\AccademicContractController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
-	Route::get('getProvinces', [ProvinceController::class, 'getProvinces']);
-	Route::get('getSchools/{searched}', [SchoolController::class, 'getSchools']);
+	Route::post('getProvinces', [ProvinceController::class, 'getProvinces']);
+	Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);
+	Route::post('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
 	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
 
 	Route::post('saveScholar', [ScholarController::class, 'saveScholar']);

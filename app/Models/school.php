@@ -17,4 +17,7 @@ class school extends Model
         'school_name', 's_province_id'
     ];
 
+    public function province(){
+    	return $this->hasOne(province::class, 'province_id', 's_province_id');
+    }
 }
