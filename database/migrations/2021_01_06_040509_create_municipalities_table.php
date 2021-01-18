@@ -16,8 +16,6 @@ class CreateMunicipalitiesTable extends Migration
         Schema::create('municipalities', function (Blueprint $table) {
             $table->bigIncrements('municipality_id');
             $table->string('municipality');
-            $table->bigInteger('provinceId')->unsigned();
-            $table->foreign('provinceId')->references('province_id')->on('provinces');
         });
     }
 

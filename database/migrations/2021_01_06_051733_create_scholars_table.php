@@ -26,6 +26,8 @@ class CreateScholarsTable extends Migration
             $table->string('gender');
             $table->bigInteger('schoolId')->unsigned();
             $table->foreign('schoolId')->references('school_id')->on('schools');
+            $table->string('course_section');
+            $table->string('year_level');
             $table->string('IP');
             $table->bigInteger('fatherId')->unsigned();
             $table->foreign('fatherId')->references('father_details_id')->on('father_details');
@@ -34,8 +36,11 @@ class CreateScholarsTable extends Migration
             $table->string('photo')->nullable();
             $table->string('degree');
             $table->string('scholar_status');
+            $table->string('contract_status');
             $table->bigInteger('scholar_asc_id')->unsigned();
             $table->foreign('scholar_asc_id')->references('asc_id')->on('academicyear_semester_contracts');
+            $table->bigInteger('sem_year_applied')->unsigned();
+            $table->foreign('sem_year_applied')->references('asc_id')->on('academicyear_semester_contracts');
             $table->timestamps();
         });
     }

@@ -13,7 +13,7 @@ class municipality extends Model
     public $timestamps = false;
     
     protected $fillable = [
-        'municipality', 'provinceId'
+        'municipality', 
     ];
     
     public function address(){

@@ -12,9 +12,8 @@ class AddressController extends Controller
     public function getAddresses(Request $request){
 		return DB::table('addresses')
 	            ->join('municipalities', 'municipalities.municipality_id', '=', 'addresses.municipalityId')
-	            ->join('provinces', 'provinces.province_id', '=', 'addresses.a_province_id')
-	            ->where(DB::raw('CONCAT(barangay_name," ",municipality," ",province_name)'), 'like', "{$request->searched}%")
-	            ->select('addresses.address_id', DB::raw('CONCAT(barangay_name," ",municipality,", ",province_name) as full_address') )
+	            ->where(DB::raw('CONCAT(barangay_name," ",municipality," ANTIQUE")'), 'like', "{$request->searched}%")
+	            ->select('addresses.address_id', DB::raw('CONCAT(barangay_name," ",municipality,", ANTIQUE") as full_address') )
 	            ->get(); 
     }
 }

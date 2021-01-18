@@ -81,6 +81,7 @@ class ScholarController extends Controller
         $s->scholar_status = $request->scholar_status;
         $s->contract_status = $request->contract_status;
         $s->scholar_asc_id = $request->scholar_asc_id;
+        $s->sem_year_applied = $request->scholar_asc_id;
         $s->save();
 
         return $s;	
@@ -115,14 +116,14 @@ class ScholarController extends Controller
 
 		}, 'address' => function($q){
 
-			$q->join('municipalities', 'municipalities.municipality_id', '=', 'municipalityId')
-			  ->join('provinces', 'provinces.province_id', '=', 'provinceId');
+			$q->join('municipalities', 'municipalities.municipality_id', '=', 'municipalityId');
 
 		}, ])
 		->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 		->where('scholar_status', 'LIKE',  $request->scholar_status)
 		->where('contract_status', 'LIKE',  $request->contract_status)
 		->where('degree', $request->degree)
+		->orderBy('lastname')
 		->get();
 	}
 }

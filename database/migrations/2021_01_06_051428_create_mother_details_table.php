@@ -18,7 +18,7 @@ class CreateMotherDetailsTable extends Migration
             $table->string('m_lastname');
             $table->string('m_firstname');
             $table->string('m_middlename')->nullable();
-            $table->string('m_occupation');
+            $table->string('m_occupation')->nullable();
         });
     }
 

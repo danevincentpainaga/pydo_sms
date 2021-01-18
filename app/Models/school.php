@@ -14,10 +14,7 @@ class school extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'school_name', 's_province_id'
+        'school_name',
     ];
 
-    public function province(){
-    	return $this->hasOne(province::class, 'province_id', 's_province_id');
-    }
 }

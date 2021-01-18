@@ -11,4 +11,5 @@ class ProvinceController extends Controller
     public function getProvinces(Request $request){
     	return province::where('province_name', 'LIKE', "{$request->searched_province}%")->get();
     }
+
 }

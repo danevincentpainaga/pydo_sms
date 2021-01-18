@@ -13,7 +13,7 @@ class semester extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'semester_id', 'semester'
+        'semester_id', 'semester',
     ];
 
     public function academicyearSemesterContract()
@@ -21,8 +21,4 @@ class semester extends Model
     	return $this->belongsTo(academicyear_semester_contract::class, 'semesterId', 'semester_id');
     }
 
-    // public function hasScholar()
-    // {
-    //     return $this->hasOneThrough(scholar::class, academicyear_semester_contract::class, 'semesterId', 'scholar_asc_id', 'semester_id', 'asc_id');
-    // }
 }

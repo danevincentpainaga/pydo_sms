@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
 	Route::post('getNewScholars', [ScholarController::class, 'getNewScholars']);
 	Route::post('getScholars', [ScholarController::class, 'getScholars']);
+	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails']);
+	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);
 	
 });
 

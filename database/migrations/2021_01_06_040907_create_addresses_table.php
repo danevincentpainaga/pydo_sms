@@ -17,9 +17,7 @@ class CreateAddressesTable extends Migration
             $table->bigIncrements('address_id');
             $table->string('barangay_name');
             $table->bigInteger('municipalityId')->unsigned();
-            $table->bigInteger('a_province_id')->unsigned();
             $table->foreign('municipalityId')->references('municipality_id')->on('municipalities');
-            $table->foreign('a_province_id')->references('province_id')->on('provinces');
         });
     }
 

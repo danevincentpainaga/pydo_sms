@@ -12,7 +12,7 @@ class activated_contract extends Model
 
     protected $primaryKey = 'activated_contract_id';
 
-    protected $fillable = ['ascId', 'old_ascId'];
+    protected $fillable = ['ascId', 'old_ascId', 'contract_state'];
 
 
 }

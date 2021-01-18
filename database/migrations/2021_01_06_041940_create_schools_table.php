@@ -16,8 +16,6 @@ class CreateSchoolsTable extends Migration
         Schema::create('schools', function (Blueprint $table) {
             $table->bigIncrements('school_id');
             $table->string('school_name');
-            $table->bigInteger('s_province_id')->unsigned();
-            $table->foreign('s_province_id')->references('province_id')->on('provinces');
         });
     }
 
