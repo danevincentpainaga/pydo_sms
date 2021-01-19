@@ -9,6 +9,7 @@ use App\Http\Controllers\API\ScholarController;
 use App\Http\Controllers\API\ScholarParentsController;
 use App\Http\Controllers\API\AccademicContractController;
 use App\Http\Controllers\API\ProvinceController;
+use App\Http\Controllers\API\UserAccountsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,8 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
 	Route::post('getNewScholars', [ScholarController::class, 'getNewScholars']);
 	Route::post('getScholars', [ScholarController::class, 'getScholars']);
-	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails']);
-	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);
+	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails'])->middleware('admin');
+	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails'])->middleware('admin');
+	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
 	
 });
 

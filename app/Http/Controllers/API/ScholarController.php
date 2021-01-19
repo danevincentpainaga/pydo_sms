@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\scholar;
 use App\Models\father_detail;
 use App\Models\mother_detail;
@@ -110,20 +111,36 @@ class ScholarController extends Controller
 
 	private function returnedScholars($request, $searched_name)
 	{
-		return scholar::with(['father', 'mother', 'school', 'academicyear_semester_contract' => function($q){
 
-			$q->join('semesters', 'semesters.semester_id', '=', 'semesterId');
+		$municipalities_access = json_decode(Auth::user()->user_access);
 
-		}, 'address' => function($q){
+		if ($municipalities_access) {
 
-			$q->join('municipalities', 'municipalities.municipality_id', '=', 'municipalityId');
+			return scholar::whereHas('address', function($query) use ($municipalities_access){
 
-		}, ])
-		->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
-		->where('scholar_status', 'LIKE',  $request->scholar_status)
-		->where('contract_status', 'LIKE',  $request->contract_status)
-		->where('degree', $request->degree)
-		->orderBy('lastname')
-		->get();
+				if ($municipalities_access[0] != "*") {
+					$query->whereIn('municipalityId', $municipalities_access );
+				}
+
+			})->with(['father', 'mother', 'school', 'academicyear_semester_contract' => function($query){
+
+				$query->join('semesters', 'semesters.semester_id', '=', 'semesterId');
+
+			}, 'address' => function($query){
+
+					$query->join('municipalities', 'municipalities.municipality_id', '=', 'municipalityId');
+
+			}, ])
+			->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
+			->where('scholar_status', 'LIKE',  $request->scholar_status)
+			->where('contract_status', 'LIKE',  $request->contract_status)
+			->where('degree', $request->degree)
+			->orderBy('lastname')
+			->get();
+
+		}
+		
+		return response()->json(['message'=> 'Unauthorized. No municipality access!'], 403);	
+
 	}
 }
