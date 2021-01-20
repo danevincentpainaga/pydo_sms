@@ -14,12 +14,7 @@ class address extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'address_id', 'barangay_name', 'municipalityId',
+        'address_id', 'barangay_name', 'municipality',
     ];
-
-    public function municipality(){
-    	return $this->hasOne(municipality::class, 'municipality_id', 'municipalityId');
-    }
-
-
+    
 }

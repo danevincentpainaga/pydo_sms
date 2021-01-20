@@ -10,6 +10,7 @@ use App\Http\Controllers\API\ScholarParentsController;
 use App\Http\Controllers\API\AccademicContractController;
 use App\Http\Controllers\API\ProvinceController;
 use App\Http\Controllers\API\UserAccountsController;
+use App\Http\Controllers\API\MunicipalitiesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,17 +35,23 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
 	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
 
-	Route::post('saveScholar', [ScholarController::class, 'saveScholar']);
+	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
 
 	Route::post('getMotherList', [ScholarParentsController::class, 'getMotherList']);
 	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
 
 	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
-	Route::post('getNewScholars', [ScholarController::class, 'getNewScholars']);
+	Route::post('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
 	Route::post('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails'])->middleware('admin');
 	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails'])->middleware('admin');
 	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
+
+	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
+
+	Route::get('getDegrees', function(){
+		return Auth::user()->scholars_access;
+	});
 	
 });
 

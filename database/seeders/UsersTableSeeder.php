@@ -19,7 +19,8 @@ class UsersTableSeeder extends Seeder
         	'name' => 'Dane Vincent',
         	'email' => 'developer@gmail.com',
         	'password' => Hash::make('developer'),
-            'user_access' => '["1", "2"]',
+            'municipal_access' => '["BELISON", "SIBALOM"]',
+            'scholars_access' => '["Master", "Doctorate"]',
             'user_type' => 1,
             'status' => 'Active',
         ]);

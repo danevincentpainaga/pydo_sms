@@ -14,13 +14,14 @@ use DB;
 class ScholarController extends Controller
 {
 
-	public function saveScholar(Request $request)
+	public function saveNewScholarDetails(Request $request)
 	{
 
 		$fid = $this->getParentId($request, $request->fatherId, 'father');
 		$mid = $this->getParentId($request, $request->motherId, 'mother');
 
 		$data = $this->saveDetails($request, $fid, $mid);
+
 		return response()->json(['result'=> $data], 200);		
 	}
 
@@ -41,6 +42,7 @@ class ScholarController extends Controller
         $f->f_lastname = $request->father['f_lastname'];
         $f->f_middlename = $request->father['f_middlename'];
         $f->save();
+
         return $f->father_details_id;
 	}
 
@@ -59,10 +61,12 @@ class ScholarController extends Controller
 				return $this->addMother($request);
 			}
 		}
+
 		return $parentId;
 	}
 
-	private function saveDetails($request, $fatherId, $motherId){
+	private function saveDetails($request, $fatherId, $motherId)
+	{
         $s = new scholar();
         $s->student_id_number = $request->student_id_number;
         $s->lastname = $request->lastname;
@@ -79,8 +83,8 @@ class ScholarController extends Controller
         $s->fatherId = $fatherId;
         $s->motherId = $motherId;
         $s->degree = $request->degree;
-        $s->scholar_status = $request->scholar_status;
-        $s->contract_status = $request->contract_status;
+        $s->scholar_status = 'NEW';
+        $s->contract_status = 'Pre-Approved';
         $s->scholar_asc_id = $request->scholar_asc_id;
         $s->sem_year_applied = $request->scholar_asc_id;
         $s->save();
@@ -88,59 +92,66 @@ class ScholarController extends Controller
         return $s;	
 	}
 
-	public function getNewScholars(Request $request)
+	public function getNewUndergraduateScholars(Request $request)
 	{
-		return scholar::with(['father', 'mother', 'school', 'academicyear_semester_contract' => function($q){
-			$q->join('semesters', 'semesters.semester_id', '=', 'semesterId');
-		}])
-		->where('scholar_status', 'NEW')
-		->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$request->searched}%")
-		->orderBy('scholar_id', 'DESC')
-		->get();
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", "Undergraduate");
 	}
 
 	public function getScholars(Request $request)
 	{
-		if ($request->hasAny(['scholar_status', 'searched_name', 'contract_status'])) 
-		{
-			return $this->returnedScholars($request, $request->searched_name);
-		}
-
-		return $this->returnedScholars($request, "");
+		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, $request->degree);
 	}
 
-	private function returnedScholars($request, $searched_name)
+	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $degree)
 	{
+		$accessed_degree = json_decode(Auth::user()->scholars_access);
 
-		$municipalities_access = json_decode(Auth::user()->user_access);
+		if ($this->validateDegree($degree, $accessed_degree)) {
 
-		if ($municipalities_access) {
+			$municipalities_access = $this->filteredMunicipality($request->municipality);
 
-			return scholar::whereHas('address', function($query) use ($municipalities_access){
+			if ($municipalities_access) {
 
-				if ($municipalities_access[0] != "*") {
-					$query->whereIn('municipalityId', $municipalities_access );
-				}
+				return scholar::whereHas('address', function($query) use ($municipalities_access){
 
-			})->with(['father', 'mother', 'school', 'academicyear_semester_contract' => function($query){
+					if ($municipalities_access[0] != "*") {
+						$query->whereIn('municipality', $municipalities_access );
+					}
 
-				$query->join('semesters', 'semesters.semester_id', '=', 'semesterId');
+				})->with(['address', 'father', 'mother', 'school', 'academicyear_semester_contract' => function($query){
 
-			}, 'address' => function($query){
+					$query->join('semesters', 'semesters.semester_id', '=', 'semesterId');
 
-					$query->join('municipalities', 'municipalities.municipality_id', '=', 'municipalityId');
+				}])
+				->whereIn('degree', $accessed_degree)
+				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
+				->where('scholar_status', 'LIKE',  $scholar_status)
+				->where('contract_status', 'LIKE',  $contract_status)
+				->where('degree', 'LIKE', $degree)
+				->orderBy('lastname')
+				->get();
 
-			}, ])
-			->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
-			->where('scholar_status', 'LIKE',  $request->scholar_status)
-			->where('contract_status', 'LIKE',  $request->contract_status)
-			->where('degree', $request->degree)
-			->orderBy('lastname')
-			->get();
+			}
+			
+			return response()->json(['message'=> 'UnAuthorized. No municipality access!'], 403);	
+		};
 
+		return response()->json(['message'=> 'UnAuthorized!'], 403);
+	}
+
+	private function filteredMunicipality($municipality){
+
+		if (!$municipality || $municipality == "Municipality") {
+			return json_decode(Auth::user()->municipal_access);
 		}
-		
-		return response()->json(['message'=> 'Unauthorized. No municipality access!'], 403);	
 
+		return [$municipality];
+	}
+
+	private function validateDegree($degree, $accessed_degree ){
+
+		if (!$degree || in_array($degree, $accessed_degree)) {
+			return true;
+		}
 	}
 }
