@@ -94,19 +94,24 @@ class ScholarController extends Controller
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", "Undergraduate");
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", ["Undergraduate"]);
+	}
+
+	public function getNewMastersDoctorateScholars(Request $request)
+	{
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", ["Masters", "Doctorate"]);
 	}
 
 	public function getScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, $request->degree);
+		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status);
 	}
 
-	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $degree)
+	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $accessedDegree = [])
 	{
-		$accessed_degree = json_decode(Auth::user()->scholars_access);
+		$accessed_degree = $this->filterScholarDegree($accessedDegree);
 
-		if ($this->validateDegree($degree, $accessed_degree)) {
+		if ($this->validateDegree($request->degree, $accessed_degree)) {
 
 			$municipalities_access = $this->filteredMunicipality($request->municipality);
 
@@ -127,7 +132,7 @@ class ScholarController extends Controller
 				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)
 				->where('contract_status', 'LIKE',  $contract_status)
-				->where('degree', 'LIKE', $degree)
+				->where('degree', 'LIKE', $request->degree)
 				->orderBy('lastname')
 				->get();
 
@@ -154,4 +159,13 @@ class ScholarController extends Controller
 			return true;
 		}
 	}
+
+	private function filterScholarDegree($accessedDegree){
+		if ($accessedDegree) 
+
+			return $accessed_degree = array_values(array_intersect(json_decode(Auth::user()->scholars_access), $accessedDegree));
+
+		return json_decode(Auth::user()->scholars_access);
+	}
+
 }

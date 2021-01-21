@@ -42,12 +42,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
 	Route::post('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
+	Route::post('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
 	Route::post('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails'])->middleware('admin');
 	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails'])->middleware('admin');
 	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
 
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
+	Route::post('logout', [AuthController::class, 'logout']);
 
 	Route::get('getDegrees', function(){
 		return Auth::user()->scholars_access;
