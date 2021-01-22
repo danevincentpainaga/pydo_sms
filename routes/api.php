@@ -11,6 +11,8 @@ use App\Http\Controllers\API\AccademicContractController;
 use App\Http\Controllers\API\ProvinceController;
 use App\Http\Controllers\API\UserAccountsController;
 use App\Http\Controllers\API\MunicipalitiesController;
+use App\Http\Controllers\API\AccademiSemesterYearcContractController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
 	Route::post('logout', [AuthController::class, 'logout']);
+	Route::get('getAcademicYearList', [AccademiSemesterYearcContractController::class, 'getAcademicYearList']);
+	Route::post('saveAcademicYearList', [AccademiSemesterYearcContractController::class, 'saveAcademicYearList']);
+	Route::post('updateAcademicYearList', [AccademiSemesterYearcContractController::class, 'updateAcademicYearList']);
+	Route::post('setContract', [AccademicContractController::class, 'setContract']);
+	Route::post('revertContract', [AccademicContractController::class, 'revertContract']);
 
 	Route::get('getDegrees', function(){
 		return Auth::user()->scholars_access;

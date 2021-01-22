@@ -16,9 +16,7 @@ class CreateActivatedContractTable extends Migration
         Schema::create('activated_contract', function (Blueprint $table) {
             $table->bigIncrements('activated_contract_id');
             $table->bigInteger('ascId')->unsigned();
-            $table->bigInteger('old_ascId')->unsigned();
             $table->string('contract_state')->nullable();
-            $table->foreign('old_ascId')->references('asc_id')->on('academicyear_semester_contracts');
             $table->foreign('ascId')->references('asc_id')->on('academicyear_semester_contracts');
             $table->timestamps();
         });

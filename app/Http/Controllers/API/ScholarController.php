@@ -123,11 +123,8 @@ class ScholarController extends Controller
 						$query->whereIn('municipality', $municipalities_access );
 					}
 
-				})->with(['address', 'father', 'mother', 'school', 'academicyear_semester_contract' => function($query){
-
-					$query->join('semesters', 'semesters.semester_id', '=', 'semesterId');
-
-				}])
+				})
+				->with(['address', 'father', 'mother', 'school', 'academicyear_semester_contract'])
 				->whereIn('degree', $accessed_degree)
 				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)

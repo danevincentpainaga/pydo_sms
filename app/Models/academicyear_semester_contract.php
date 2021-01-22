@@ -12,12 +12,8 @@ class academicyear_semester_contract extends Model
     protected $primaryKey = 'asc_id';
 
     protected $fillable = [
-        'asc_id', 'semesterId', 'academic_year'
+        'asc_id', 'semester', 'academic_year'
     ];
-
-    public function semester(){
-    	return $this->hasOne(semester::class, 'semester_id', 'semesterId');
-    }
 
     public function scholar(){
     	return $this->hasOne(scholar::class, 'scholar_asc_id', 'asc_id');

@@ -15,9 +15,8 @@ class CreateAcademicyearSemesterContractsTable extends Migration
     {
         Schema::create('academicyear_semester_contracts', function (Blueprint $table) {
             $table->bigIncrements('asc_id');
-            $table->bigInteger('semesterId')->unsigned();
+            $table->string('semester');
             $table->string('academic_year');
-            $table->foreign('semesterId')->references('semester_id')->on('semesters');
             $table->timestamps();
         });
     }
