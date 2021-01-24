@@ -17,7 +17,7 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->user_type == 1) {
+        if (Auth::user()->user_type == "Admin") {
             return $next($request);
         }
         return response()->json( ['message'=> 'Not Authorized.'], 403 );

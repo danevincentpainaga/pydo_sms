@@ -13,7 +13,7 @@ class scholar extends Model
 
     protected $fillable = [
         'student_id_number', 'lastname', 'firstname', 'middlename','addressId ', 'date_of_birth', 'age', 'gender',
-        'schoolId ', 'course_section', 'year_level', 'IP', 'fatherId ', 'photo', 'degree', 'scholar_status', 'contract_status', 'scholar_asc_id', 'sem_year_applied',
+        'schoolId ', 'course_section', 'year_level', 'IP', 'fatherId ', 'photo', 'degree', 'scholar_status', 'contract_status', 'scholar_asc_id', 'last_renewed', 'sem_year_applied',
     ];
 
     public function school(){
@@ -21,7 +21,7 @@ class scholar extends Model
     }
 
     public function academicyear_semester_contract(){
-    	return $this->HasOne(academicyear_semester_contract::class, 'asc_id', 'scholar_asc_id');
+    	return $this->HasOne(academicyear_semester_contract::class, 'asc_id', 'last_renewed');
     }
 
     public function father(){

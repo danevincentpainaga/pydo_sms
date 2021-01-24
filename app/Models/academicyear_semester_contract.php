@@ -12,7 +12,7 @@ class academicyear_semester_contract extends Model
     protected $primaryKey = 'asc_id';
 
     protected $fillable = [
-        'asc_id', 'semester', 'academic_year'
+        'asc_id', 'semester', 'state', 'academic_year'
     ];
 
     public function scholar(){

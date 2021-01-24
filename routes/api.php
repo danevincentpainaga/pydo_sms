@@ -8,7 +8,6 @@ use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\ScholarController;
 use App\Http\Controllers\API\ScholarParentsController;
 use App\Http\Controllers\API\AccademicContractController;
-use App\Http\Controllers\API\ProvinceController;
 use App\Http\Controllers\API\UserAccountsController;
 use App\Http\Controllers\API\MunicipalitiesController;
 use App\Http\Controllers\API\AccademiSemesterYearcContractController;
@@ -25,43 +24,50 @@ use App\Http\Controllers\API\AccademiSemesterYearcContractController;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
+Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-	Route::post('getProvinces', [ProvinceController::class, 'getProvinces']);
-	Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);
-	Route::post('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
-	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
-
+	Route::post('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
+
+
+	Route::post('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
+	Route::post('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
+
 
 	Route::post('getMotherList', [ScholarParentsController::class, 'getMotherList']);
 	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
 
-	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
-	Route::post('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
-	Route::post('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
-	Route::post('getScholars', [ScholarController::class, 'getScholars']);
-	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails'])->middleware('admin');
-	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails'])->middleware('admin');
-	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
 
+	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
-	Route::post('logout', [AuthController::class, 'logout']);
+
+
+	Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);
+	Route::post('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
+	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails']);
+	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);
+	
+
+	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
+	
+	
+	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
 	Route::get('getAcademicYearList', [AccademiSemesterYearcContractController::class, 'getAcademicYearList']);
-	Route::post('saveAcademicYearList', [AccademiSemesterYearcContractController::class, 'saveAcademicYearList']);
-	Route::post('updateAcademicYearList', [AccademiSemesterYearcContractController::class, 'updateAcademicYearList']);
-	Route::post('setContract', [AccademicContractController::class, 'setContract']);
-	Route::post('revertContract', [AccademicContractController::class, 'revertContract']);
+	Route::post('saveAcademicYearList', [AccademiSemesterYearcContractController::class, 'saveAcademicYearList'])->middleware('admin');
+	Route::post('updateAcademicYearList', [AccademiSemesterYearcContractController::class, 'updateAcademicYearList'])->middleware('admin');
+
+
+	Route::post('setContract', [AccademicContractController::class, 'setContract'])->middleware('admin');
+	Route::post('closeContract', [AccademicContractController::class, 'closeContract'])->middleware('admin');
+	Route::post('openContract', [AccademicContractController::class, 'openContract'])->middleware('admin');
+	
 
 	Route::get('getDegrees', function(){
 		return Auth::user()->scholars_access;
 	});
+
+	Route::post('logout', [AuthController::class, 'logout']);
 	
 });
-
-Route::post('login', [AuthController::class, 'login']);

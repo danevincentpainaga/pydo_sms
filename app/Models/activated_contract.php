@@ -14,5 +14,8 @@ class activated_contract extends Model
 
     protected $fillable = ['ascId', 'contract_state'];
 
+    public function academicYearSemester(){
+    	return $this->belongsTo(academicyear_semester_contract::class, 'ascId', 'asc_id');
+    }
 
 }

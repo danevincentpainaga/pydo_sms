@@ -85,8 +85,9 @@ class ScholarController extends Controller
         $s->degree = $request->degree;
         $s->scholar_status = 'NEW';
         $s->contract_status = 'Pre-Approved';
-        $s->scholar_asc_id = $request->scholar_asc_id;
-        $s->sem_year_applied = $request->scholar_asc_id;
+        $s->scholar_asc_id = $request->asc_id;
+        $s->last_renewed = $request->asc_id;
+        $s->sem_year_applied = $request->asc_id;
         $s->save();
 
         return $s;	
@@ -152,9 +153,8 @@ class ScholarController extends Controller
 
 	private function validateDegree($degree, $accessed_degree ){
 
-		if (!$degree || in_array($degree, $accessed_degree)) {
-			return true;
-		}
+		if (!$degree || in_array($degree, $accessed_degree)) return true;
+		
 	}
 
 	private function filterScholarDegree($accessedDegree){

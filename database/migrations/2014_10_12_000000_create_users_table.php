@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->text('municipal_access');
             $table->text('scholars_access');
-            $table->integer('user_type');
+            $table->string('user_type');
             $table->string('status');
             $table->rememberToken();
             $table->timestamps();

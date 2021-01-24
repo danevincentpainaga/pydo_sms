@@ -39,6 +39,8 @@ class CreateScholarsTable extends Migration
             $table->string('contract_status');
             $table->bigInteger('scholar_asc_id')->unsigned();
             $table->foreign('scholar_asc_id')->references('asc_id')->on('academicyear_semester_contracts');
+            $table->bigInteger('last_renewed')->unsigned();
+            $table->foreign('last_renewed')->references('asc_id')->on('academicyear_semester_contracts');
             $table->bigInteger('sem_year_applied')->unsigned();
             $table->foreign('sem_year_applied')->references('asc_id')->on('academicyear_semester_contracts');
             $table->timestamps();
