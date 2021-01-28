@@ -31,8 +31,8 @@ class ScholarController extends Controller
 	        'middlename' => 'required',
 	        'addressId' => 'required',
 	        'date_of_birth' => 'required|min:10|max:10',
-	        'age' => 'required',
-	        'gender' => 'required',
+	        'age' => 'required|min:2|max:2',
+	        'gender' => 'required|min:4|max:6',
 	        'schoolId' => 'required',
 	        'course_section' => 'required',
 	        'year_level' => 'required',
@@ -42,7 +42,6 @@ class ScholarController extends Controller
 	        'degree' => 'required',
 	        'asc_id' => 'required',
 	    ]);
-
 
         $s = new scholar();
         $s->student_id_number = $request->student_id_number;
@@ -57,8 +56,8 @@ class ScholarController extends Controller
         $s->course_section  = $request->course_section;
         $s->year_level  = $request->year_level;
         $s->IP = $request->IP;
-        $s->father_details = json_encode($request->father_details);
-        $s->mother_details = json_encode($request->mother_details);
+        $s->father_details = $request->father_details;
+        $s->mother_details = $request->mother_details;
         $s->degree = $request->degree;
         $s->scholar_status = 'NEW';
         $s->contract_status = 'Pre-Approved';
