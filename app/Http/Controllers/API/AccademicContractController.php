@@ -32,13 +32,15 @@ class AccademicContractController extends Controller
     public function setContract(Request $request)
     {
         
-        DB::beginTransaction();
+        
         try {
 
             $contract = activated_contract::first();
 
             if ($contract && $contract->contract_state !="Open") {
 
+                DB::beginTransaction();
+                
                 $contract->ascId = $request->ascId;
                 $contract->contract_state = "Open";
                 $contract->save();
@@ -60,9 +62,10 @@ class AccademicContractController extends Controller
                 $c->contract_state = "Open";
                 $c->save();
 
-                return response()->json(['message' => 'Contract opened'], 200);
+                return response()->json(['message' => $c], 200);
             }
 
+            
 
             return response()->json(['message' => 'Failed. Contract already opened.'] , 500);
 

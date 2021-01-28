@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	
 
 	Route::get('getDegrees', function(){
-		return Auth::user()->scholars_access;
+		return Auth::user()->degree_access;
 	});
 
 	Route::post('logout', [AuthController::class, 'logout']);

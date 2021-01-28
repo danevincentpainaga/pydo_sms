@@ -29,10 +29,8 @@ class CreateScholarsTable extends Migration
             $table->string('course_section');
             $table->string('year_level');
             $table->string('IP');
-            $table->bigInteger('fatherId')->unsigned();
-            $table->foreign('fatherId')->references('father_details_id')->on('father_details');
-            $table->bigInteger('motherId')->unsigned();
-            $table->foreign('motherId')->references('mother_details_id')->on('mother_details');
+            $table->json('father_details');
+            $table->json('mother_details');
             $table->string('photo')->nullable();
             $table->string('degree');
             $table->string('scholar_status');

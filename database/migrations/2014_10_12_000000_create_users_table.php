@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->text('municipal_access');
-            $table->text('scholars_access');
+            $table->text('degree_access');
             $table->string('user_type');
             $table->string('status');
             $table->rememberToken();

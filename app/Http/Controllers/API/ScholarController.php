@@ -16,57 +16,34 @@ class ScholarController extends Controller
 
 	public function saveNewScholarDetails(Request $request)
 	{
+		$data = $this->saveDetails($request);
 
-		$fid = $this->getParentId($request, $request->fatherId, 'father');
-		$mid = $this->getParentId($request, $request->motherId, 'mother');
-
-		$data = $this->saveDetails($request, $fid, $mid);
-
-		return response()->json(['result'=> $data], 200);		
+		return response()->json(['result'=> $data], 200);	
 	}
 
-	public function addMother($request)
+	private function saveDetails($request)
 	{
-        $m = new mother_detail();
-        $m->m_firstname = $request->mother['m_firstname'];
-        $m->m_lastname = $request->mother['m_lastname'];
-        $m->m_middlename = $request->mother['m_middlename'];
-        $m->save();
-        return $m->mother_details_id;
-	}
 
-	public function addFather($request)
-	{
-        $f = new father_detail();
-        $f->f_firstname = $request->father['f_firstname'];
-        $f->f_lastname = $request->father['f_lastname'];
-        $f->f_middlename = $request->father['f_middlename'];
-        $f->save();
+	    $request->validate([
+	        'student_id_number' => 'required',
+	        'lastname' => 'required',
+	        'firstname' => 'required',
+	        'middlename' => 'required',
+	        'addressId' => 'required',
+	        'date_of_birth' => 'required|min:10|max:10',
+	        'age' => 'required',
+	        'gender' => 'required',
+	        'schoolId' => 'required',
+	        'course_section' => 'required',
+	        'year_level' => 'required',
+	        'IP' => 'required',
+	        'father_details' => 'required',
+	        'mother_details' => 'required',
+	        'degree' => 'required',
+	        'asc_id' => 'required',
+	    ]);
 
-        return $f->father_details_id;
-	}
 
-	public function saveScholarDetails()
-	{
-		
-	}
-
-	private function getParentId($request, $parentId, $parent)
-	{
-		if (!$parentId) {
-			if ($parent == 'father') {
-				return $this->addFather($request);
-			}
-			else{
-				return $this->addMother($request);
-			}
-		}
-
-		return $parentId;
-	}
-
-	private function saveDetails($request, $fatherId, $motherId)
-	{
         $s = new scholar();
         $s->student_id_number = $request->student_id_number;
         $s->lastname = $request->lastname;
@@ -80,8 +57,8 @@ class ScholarController extends Controller
         $s->course_section  = $request->course_section;
         $s->year_level  = $request->year_level;
         $s->IP = $request->IP;
-        $s->fatherId = $fatherId;
-        $s->motherId = $motherId;
+        $s->father_details = json_encode($request->father_details);
+        $s->mother_details = json_encode($request->mother_details);
         $s->degree = $request->degree;
         $s->scholar_status = 'NEW';
         $s->contract_status = 'Pre-Approved';
@@ -125,7 +102,7 @@ class ScholarController extends Controller
 					}
 
 				})
-				->with(['address', 'father', 'mother', 'school', 'academicyear_semester_contract'])
+				->with(['address', 'school', 'academicyear_semester_contract'])
 				->whereIn('degree', $accessed_degree)
 				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)
@@ -160,9 +137,9 @@ class ScholarController extends Controller
 	private function filterScholarDegree($accessedDegree){
 		if ($accessedDegree) 
 
-			return $accessed_degree = array_values(array_intersect(json_decode(Auth::user()->scholars_access), $accessedDegree));
+			return $accessed_degree = array_values(array_intersect(json_decode(Auth::user()->degree_access), $accessedDegree));
 
-		return json_decode(Auth::user()->scholars_access);
+		return json_decode(Auth::user()->degree_access);
 	}
 
 }

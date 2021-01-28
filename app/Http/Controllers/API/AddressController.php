@@ -10,9 +10,11 @@ use DB;
 class AddressController extends Controller
 {
     public function getAddresses(Request $request){
-		return DB::table('addresses')
-	            ->where(DB::raw('CONCAT(barangay_name," ",municipality," ANTIQUE")'), 'like', "{$request->searched}%")
-	            ->select('addresses.address_id', DB::raw('CONCAT(barangay_name," ",municipality,", ANTIQUE") as full_address') )
-	            ->get(); 
+		// return DB::table('addresses')
+	 //            ->where(DB::raw('CONCAT(barangay_name," ",municipality," ANTIQUE")'), 'like', "{$request->searched}%")
+	 //            ->select('addresses.address_id', DB::raw('CONCAT(barangay_name," ",municipality,", ANTIQUE") as full_address') )
+	 //            ->get(); 
+
+	    return address::where('address', 'LIKE', "{$request->searched}%")->get();
     }
 }

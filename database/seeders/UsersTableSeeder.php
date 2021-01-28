@@ -20,7 +20,7 @@ class UsersTableSeeder extends Seeder
         	'email' => 'developer@gmail.com',
         	'password' => Hash::make('developer'),
             'municipal_access' => '["BELISON", "SIBALOM"]',
-            'scholars_access' => '["Undergraduate", "Masters", "Doctorate"]',
+            'degree_access' => '["Undergraduate", "Masters", "Doctorate"]',
             'user_type' => "Admin",
             'status' => 'Active',
         ]);
