@@ -21,52 +21,100 @@ class ScholarController extends Controller
 		return response()->json(['result'=> $data], 200);	
 	}
 
+
+	public function updateScholarDetails(Request $request)
+	{
+		try {
+
+		    $request->validate([
+		    	'scholar_id' => 'required',
+		        'student_id_number' => 'required',
+		        'lastname' => 'required',
+		        'firstname' => 'required',
+		        'middlename' => 'required',
+		        'addressId' => 'required',
+		        'date_of_birth' => 'required|min:10|max:10',
+		        'age' => 'required|min:2|max:2',
+		        'gender' => 'required|min:4|max:6',
+		        'schoolId' => 'required',
+		        'course_section' => 'required',
+		        'year_level' => 'required',
+		        'IP' => 'required',
+		    ]);
+
+	        $s = scholar::find($request->scholar_id);
+	        $s->student_id_number = $request->student_id_number;
+	        $s->lastname = $request->lastname;
+	        $s->firstname = $request->firstname;
+	        $s->middlename = $request->middlename;
+	        $s->addressId = $request->addressId;
+	        $s->date_of_birth = $request->date_of_birth;
+	        $s->age = $request->age;
+	        $s->gender = $request->gender;
+	        $s->schoolId  = $request->schoolId;
+	        $s->course_section  = $request->course_section;
+	        $s->year_level  = $request->year_level;
+	        $s->IP = $request->IP;
+	        $s->save();
+
+			return $s->updated_at;
+
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
 	private function saveDetails($request)
 	{
+		try {
 
-	    $request->validate([
-	        'student_id_number' => 'required',
-	        'lastname' => 'required',
-	        'firstname' => 'required',
-	        'middlename' => 'required',
-	        'addressId' => 'required',
-	        'date_of_birth' => 'required|min:10|max:10',
-	        'age' => 'required|min:2|max:2',
-	        'gender' => 'required|min:4|max:6',
-	        'schoolId' => 'required',
-	        'course_section' => 'required',
-	        'year_level' => 'required',
-	        'IP' => 'required',
-	        'father_details' => 'required',
-	        'mother_details' => 'required',
-	        'degree' => 'required',
-	        'asc_id' => 'required',
-	    ]);
+		    $request->validate([
+		        'student_id_number' => 'required',
+		        'lastname' => 'required',
+		        'firstname' => 'required',
+		        'middlename' => 'required',
+		        'addressId' => 'required',
+		        'date_of_birth' => 'required|min:10|max:10',
+		        'age' => 'required|min:2|max:2',
+		        'gender' => 'required|min:4|max:6',
+		        'schoolId' => 'required',
+		        'course_section' => 'required',
+		        'year_level' => 'required',
+		        'IP' => 'required',
+		        'father_details' => 'required',
+		        'mother_details' => 'required',
+		        'degree' => 'required',
+		        'asc_id' => 'required',
+		    ]);
 
-        $s = new scholar();
-        $s->student_id_number = $request->student_id_number;
-        $s->lastname = $request->lastname;
-        $s->firstname = $request->firstname;
-        $s->middlename = $request->middlename;
-        $s->addressId = $request->addressId;
-        $s->date_of_birth = $request->date_of_birth;
-        $s->age = $request->age;
-        $s->gender = $request->gender;
-        $s->schoolId  = $request->schoolId;
-        $s->course_section  = $request->course_section;
-        $s->year_level  = $request->year_level;
-        $s->IP = $request->IP;
-        $s->father_details = $request->father_details;
-        $s->mother_details = $request->mother_details;
-        $s->degree = $request->degree;
-        $s->scholar_status = 'NEW';
-        $s->contract_status = 'Pre-Approved';
-        $s->scholar_asc_id = $request->asc_id;
-        $s->last_renewed = $request->asc_id;
-        $s->sem_year_applied = $request->asc_id;
-        $s->save();
+	        $s = new scholar();
+	        $s->student_id_number = $request->student_id_number;
+	        $s->lastname = $request->lastname;
+	        $s->firstname = $request->firstname;
+	        $s->middlename = $request->middlename;
+	        $s->addressId = $request->addressId;
+	        $s->date_of_birth = $request->date_of_birth;
+	        $s->age = $request->age;
+	        $s->gender = $request->gender;
+	        $s->schoolId  = $request->schoolId;
+	        $s->course_section  = $request->course_section;
+	        $s->year_level  = $request->year_level;
+	        $s->IP = $request->IP;
+	        $s->father_details = $request->father_details;
+	        $s->mother_details = $request->mother_details;
+	        $s->degree = $request->degree;
+	        $s->scholar_status = 'NEW';
+	        $s->contract_status = 'Pre-Approved';
+	        $s->scholar_asc_id = $request->asc_id;
+	        $s->last_renewed = $request->asc_id;
+	        $s->sem_year_applied = $request->asc_id;
+	        $s->save();
 
-        return $s;	
+	        return $s;
+
+		} catch (Exception $e) {
+			throw $e;
+		}	
 	}
 
 	public function getNewUndergraduateScholars(Request $request)

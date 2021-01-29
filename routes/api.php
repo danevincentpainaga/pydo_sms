@@ -30,7 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::post('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
-
+	Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
+	
 
 	Route::post('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
 	Route::post('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::post('getMotherList', [ScholarParentsController::class, 'getMotherList']);
 	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
+	Route::post('updateScholarParentsDetails', [ScholarParentsController::class, 'updateScholarParentsDetails']);
 
 
 	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
