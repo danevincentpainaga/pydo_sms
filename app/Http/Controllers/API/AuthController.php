@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -31,6 +32,10 @@ class AuthController extends Controller
 		 							], 
 		 							200
 		 						);
+    }
+
+    public function getAuthenticatedUser(){
+    	return Auth::user();
     }
 
     public function logout(Request $request){

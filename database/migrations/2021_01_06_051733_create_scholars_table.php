@@ -35,8 +35,8 @@ class CreateScholarsTable extends Migration
             $table->string('degree');
             $table->string('scholar_status');
             $table->string('contract_status');
-            $table->bigInteger('scholar_asc_id')->unsigned();
-            $table->foreign('scholar_asc_id')->references('asc_id')->on('academicyear_semester_contracts');
+            $table->bigInteger('contract_id')->unsigned();
+            $table->foreign('contract_id')->references('activated_contract_id')->on('activated_contract');
             $table->bigInteger('last_renewed')->unsigned();
             $table->foreign('last_renewed')->references('asc_id')->on('academicyear_semester_contracts');
             $table->bigInteger('sem_year_applied')->unsigned();

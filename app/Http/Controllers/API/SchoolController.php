@@ -8,10 +8,10 @@ use App\Models\school;
 
 class SchoolController extends Controller
 {
-    public function getSearchedSchool($searched = "")
-    {
-    	return school::where('school_name', 'LIKE', "{$searched}%")->get();
-    }
+    // public function getSearchedSchool($searched = "")
+    // {
+    // 	return school::where('school_name', 'LIKE', "{$searched}%")->get();
+    // }
 
     public function getListOfSchool(Request $request)
     {

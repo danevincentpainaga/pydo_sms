@@ -1,17 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\API;
-
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Models\scholar;
-use App\Models\father_detail;
-use App\Models\mother_detail;
 use App\Models\academicyear_semester_contract;
 use DB;
 
-class ScholarController extends Controller
+class ScholarController extends validateUserCredentials
 {
 
 	public function saveNewScholarDetails(Request $request)
@@ -105,7 +100,7 @@ class ScholarController extends Controller
 	        $s->degree = $request->degree;
 	        $s->scholar_status = 'NEW';
 	        $s->contract_status = 'Pre-Approved';
-	        $s->scholar_asc_id = $request->asc_id;
+	        $s->contract_id = $request->contract_id;
 	        $s->last_renewed = $request->asc_id;
 	        $s->sem_year_applied = $request->asc_id;
 	        $s->save();
@@ -119,20 +114,20 @@ class ScholarController extends Controller
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", ["Undergraduate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', ["Undergraduate"]);
 	}
 
 	public function getNewMastersDoctorateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", ["Masters", "Doctorate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', ["Masters", "Doctorate"]);
 	}
 
 	public function getScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status);
+		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, 'lastname', 'ASC');
 	}
 
-	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $accessedDegree = [])
+	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $columnToBeOrdered, $orderby, $accessedDegree = [])
 	{
 		$accessed_degree = $this->filterScholarDegree($accessedDegree);
 
@@ -149,14 +144,14 @@ class ScholarController extends Controller
 					}
 
 				})
-				->with(['address', 'school', 'academicyear_semester_contract'])
+				->with(['address', 'school', 'academicyear_semester_contract'])		
 				->whereIn('degree', $accessed_degree)
 				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)
 				->where('contract_status', 'LIKE',  $contract_status)
 				->where('degree', 'LIKE', $request->degree)
-				->orderBy('lastname')
-				->get();
+				->orderBy($columnToBeOrdered, $orderby)
+				->paginate(50);
 
 			}
 			
@@ -165,28 +160,5 @@ class ScholarController extends Controller
 
 		return response()->json(['message'=> 'UnAuthorized!'], 403);
 	}
-
-	private function filteredMunicipality($municipality){
-
-		if (!$municipality || $municipality == "Municipality") {
-			return json_decode(Auth::user()->municipal_access);
-		}
-
-		return [$municipality];
-	}
-
-	private function validateDegree($degree, $accessed_degree ){
-
-		if (!$degree || in_array($degree, $accessed_degree)) return true;
-		
-	}
-
-	private function filterScholarDegree($accessedDegree){
-		if ($accessedDegree) 
-
-			return $accessed_degree = array_values(array_intersect(json_decode(Auth::user()->degree_access), $accessedDegree));
-
-		return json_decode(Auth::user()->degree_access);
-	}
-
+	
 }

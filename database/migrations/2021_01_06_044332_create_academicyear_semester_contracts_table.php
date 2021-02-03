@@ -18,6 +18,7 @@ class CreateAcademicyearSemesterContractsTable extends Migration
             $table->string('semester');
             $table->string('academic_year');
             $table->string('state');
+            $table->string('amount');
             $table->timestamps();
         });
     }

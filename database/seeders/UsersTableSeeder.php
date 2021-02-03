@@ -16,13 +16,25 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-        	'name' => 'Dane Vincent',
-        	'email' => 'developer@gmail.com',
-        	'password' => Hash::make('developer'),
-            'municipal_access' => '["BELISON", "SIBALOM"]',
-            'degree_access' => '["Undergraduate", "Masters", "Doctorate"]',
-            'user_type' => "Admin",
-            'status' => 'Active',
+            [
+            	'name' => 'Dane Vincent',
+            	'email' => 'developer@gmail.com',
+            	'password' => Hash::make('developer'),
+                'municipal_access' => '["*"]',
+                'degree_access' => '["Undergraduate", "Masters", "Doctorate"]',
+                'user_type' => "Admin",
+                'status' => 'Active',
+            ],
+            [
+                'name' => 'Shanks',
+                'email' => 'shanks@gmail.com',
+                'password' => Hash::make('shanks'),
+                'municipal_access' => '["*"]',
+                'degree_access' => '["Undergraduate", "Masters", "Doctorate"]',
+                'user_type' => "Admin",
+                'status' => 'Active',
+            ]
         ]);
+
     }
 }

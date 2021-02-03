@@ -11,6 +11,7 @@ use App\Http\Controllers\API\AccademicContractController;
 use App\Http\Controllers\API\UserAccountsController;
 use App\Http\Controllers\API\MunicipalitiesController;
 use App\Http\Controllers\API\AccademiSemesterYearcContractController;
+use App\Http\Controllers\API\ExportScholarsController;
 
 
 /*
@@ -28,26 +29,26 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-	Route::post('getScholars', [ScholarController::class, 'getScholars']);
+	Route::get('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
 	Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
 	
 
-	Route::post('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
-	Route::post('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
+	Route::get('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
+	Route::get('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
 
 
-	Route::post('getMotherList', [ScholarParentsController::class, 'getMotherList']);
-	Route::post('getFatherList', [ScholarParentsController::class, 'getFatherList']);
+	Route::get('getMotherList', [ScholarParentsController::class, 'getMotherList']);
+	Route::get('getFatherList', [ScholarParentsController::class, 'getFatherList']);
 	Route::post('updateScholarParentsDetails', [ScholarParentsController::class, 'updateScholarParentsDetails']);
 
 
-	Route::post('getAddresses', [AddressController::class, 'getAddresses']);
+	Route::get('getAddresses', [AddressController::class, 'getAddresses']);
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
 
 
-	Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);
-	Route::post('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
+	// Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);
+	Route::get('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
 	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails']);
 	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);
 	
@@ -64,12 +65,18 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('setContract', [AccademicContractController::class, 'setContract'])->middleware('admin');
 	Route::post('closeContract', [AccademicContractController::class, 'closeContract'])->middleware('admin');
 	Route::post('openContract', [AccademicContractController::class, 'openContract'])->middleware('admin');
+	Route::post('confirmPassword', [AccademicContractController::class, 'confirmPassword'])->middleware('admin');
 	
 
 	Route::get('getDegrees', function(){
 		return Auth::user()->degree_access;
 	});
 
+
+	Route::get('getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
+
+
+	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 	Route::post('logout', [AuthController::class, 'logout']);
 	
 });

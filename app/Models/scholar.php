@@ -13,7 +13,7 @@ class scholar extends Model
 
     protected $fillable = [
         'student_id_number', 'lastname', 'firstname', 'middlename','addressId', 'date_of_birth', 'age', 'gender',
-        'schoolId', 'course_section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'scholar_asc_id', 'last_renewed', 'sem_year_applied',
+        'schoolId', 'course_section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'contract_id', 'last_renewed', 'sem_year_applied',
     ];
 
     protected $casts = [
@@ -32,5 +32,8 @@ class scholar extends Model
     public function address(){
         return $this->HasOne(address::class, 'address_id', 'addressId');
     }
-
+    
+    public function activated_contract(){
+        return $this->belongsTo(activated_contract::class, 'contract_id', 'activated_contract_id');
+    }
 }
