@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use File;
 use App\Models\scholar;
 use App\Models\academicyear_semester_contract;
 use DB;
@@ -161,4 +164,49 @@ class ScholarController extends validateUserCredentials
 		return response()->json(['message'=> 'UnAuthorized!'], 403);
 	}
 	
+    public function uploadProfilePic(Request $request){
+
+        if ($request->hasFile('file')) {
+
+        	$file = $request->file('file');
+
+        	$fileName = $this->createFilename($file);
+
+        	$mime = str_replace('/', '-', $file->getMimeType());
+        	$dateFolder = date("Y-m-W");
+
+            $filePath = "upload/{$mime}/{$dateFolder}/";
+
+            $finalPath = storage_path("app/public/".$filePath);
+
+            $file->move($finalPath, $fileName);
+
+
+
+            if ($fileName) {
+            	$s = scholar::findOrFail($request->scholar_id);
+            	$oldfile = $s->photo;
+            	$s->photo = $filePath . $fileName;
+            	$s->save();
+
+            	File::delete(storage_path("app/public/".$oldfile));
+            }
+
+
+	        return $s->photo;
+        }
+
+        return "No file";
+
+    }
+
+    private function createFilename(UploadedFile $file)
+    {
+        $extension = $file->getClientOriginalExtension();
+        $filename = str_replace([" ", ".".$extension], "", $file->getClientOriginalName()); 
+        $filename .= "_" . md5(time()) . "." . $extension;
+
+        return $filename;
+    }
+
 }
