@@ -15,7 +15,7 @@ class SchoolController extends Controller
 
     public function getListOfSchool(Request $request)
     {
-    	return school::where('school_name', 'LIKE', "%{$request->searched_school}%")->get();
+    	return school::where('school_name', 'LIKE', "{$request->searched_school}%")->take(7)->get();
     }
 
      public function saveSchoolDetails(Request $request)

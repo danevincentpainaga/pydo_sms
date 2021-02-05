@@ -12,6 +12,8 @@ use App\Http\Controllers\API\UserAccountsController;
 use App\Http\Controllers\API\MunicipalitiesController;
 use App\Http\Controllers\API\AccademiSemesterYearcContractController;
 use App\Http\Controllers\API\ExportScholarsController;
+use App\Http\Controllers\API\dashboardController;
+
 
 
 /*
@@ -43,7 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('getFatherList', [ScholarParentsController::class, 'getFatherList']);
 	Route::post('updateScholarParentsDetails', [ScholarParentsController::class, 'updateScholarParentsDetails']);
 
-
+	
+	Route::post('saveAddress', [AddressController::class, 'saveAddress']);
+	Route::post('updateAddress', [AddressController::class, 'updateAddress']);
 	Route::get('getAddresses', [AddressController::class, 'getAddresses']);
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
 
@@ -79,5 +83,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 	Route::post('logout', [AuthController::class, 'logout']);
+
+
+	Route::get('newScholarsCount', [dashboardController::class, 'newScholarsCount']);
+	Route::get('oldScholarsCount', [dashboardController::class, 'oldScholarsCount']);
 	
 });

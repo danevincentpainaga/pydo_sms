@@ -27,6 +27,7 @@ class ScholarController extends validateUserCredentials
 		    $request->validate([
 		    	'scholar_id' => 'required',
 		        'student_id_number' => 'required',
+		        'degree' => 'required',
 		        'lastname' => 'required',
 		        'firstname' => 'required',
 		        'middlename' => 'required',
@@ -42,6 +43,7 @@ class ScholarController extends validateUserCredentials
 
 	        $s = scholar::find($request->scholar_id);
 	        $s->student_id_number = $request->student_id_number;
+	        $s->degree = $request->degree;
 	        $s->lastname = $request->lastname;
 	        $s->firstname = $request->firstname;
 	        $s->middlename = $request->middlename;
