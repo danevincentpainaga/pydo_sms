@@ -19,7 +19,7 @@ class ExportScholarsController extends validateUserCredentials
 			
 			if ($municipalities_access) {
 
-				return scholar::with(['address', 'school', 'academicyear_semester_contract'])
+				return scholar::with(['address', 'school', 'course', 'academicyear_semester_contract'])
 				->whereHas('address', function($query) use ($municipalities_access, $request){
 
 					if ($municipalities_access[0] != "*") {
@@ -40,7 +40,7 @@ class ExportScholarsController extends validateUserCredentials
 				->where('gender', 'LIKE', $request->gender)
 				->where('scholar_status', 'LIKE',  $request->scholar_status)
 				->where('contract_status', 'LIKE',  $request->contract_status)
-				->where('course_section', 'LIKE', "{$request->course_section}%")
+				// ->where('course_section', 'LIKE', "{$request->course_section}%")
 				->where('student_id_number', 'LIKE', "{$request->student_id_number}%")
 				->where('year_level', 'LIKE', $request->year_level)
 				->where('IP', 'LIKE', $request->IP)

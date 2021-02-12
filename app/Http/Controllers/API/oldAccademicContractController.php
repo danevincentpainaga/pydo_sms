@@ -63,23 +63,43 @@ class AccademicContractController extends Controller
 
             $contract = activated_contract::first();
 
-            if ($contract) {
-                return response()->json(['message' => 'Failed!. Contract already opened.'] , 500);
+            if ($contract && $contract->contract_state == 'Closed') {
+
+                DB::beginTransaction();
+                
+                $contract->ascId = $request->ascId;
+                $contract->contract_state = "Open";
+                $contract->save();
+
+                academicyear_semester_contract::findOrFail($contract->ascId)->update(['state'=> 'Selected']);
+                scholar::where('contract_status', 'Approved')->update(['contract_status'=> 'Pending']);
+                scholar::where('scholar_status', 'NEW')->update(['scholar_status'=> 'OLD']);
+
+                DB::commit();
+
+                return response()->json(['message' => 'Contract opened'], 200);
+
             }
 
-            DB::beginTransaction();
+            if (!$contract) {
 
-            $c = new activated_contract;
-            $c->ascId = $request->ascId;
-            $c->contract_state = "Open";
-            $c->save();
+                DB::beginTransaction();
 
-            academicyear_semester_contract::findOrFail($request->ascId)->update(['state'=> 'Selected']);
+                $c = new activated_contract;
+                $c->ascId = $request->ascId;
+                $c->contract_state = "Open";
+                $c->save();
 
-            DB::commit();
+                academicyear_semester_contract::findOrFail($request->ascId)->update(['state'=> 'Selected']);
 
-            return response()->json(['message' => 'Contract succesfully set.'], 200);
+                DB::commit();
 
+                return response()->json(['message' => $c], 200);
+            }
+
+            
+
+            return response()->json(['message' => 'Failed!. Contract already opened.'] , 500);
 
         } catch (Exception $e) {
             DB::roolback();

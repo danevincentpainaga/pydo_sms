@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use File;
@@ -12,11 +13,29 @@ use DB;
 class ScholarController extends validateUserCredentials
 {
 
+	public function getAllScholars(){
+		return scholar::all();
+	}
+
 	public function saveNewScholarDetails(Request $request)
 	{
-		$data = $this->saveDetails($request);
+		try {
 
-		return response()->json(['result'=> $data], 200);	
+			$scholarExist = scholar::where(['lastname' => $request->lastname, 'firstname' => $request->firstname, 'middlename' => $request->middlename])->first();
+
+			if(!$scholarExist){
+
+				$data = $this->saveDetails($request);
+				
+				return response()->json(['message'=> $data], 200);	
+
+			}
+
+			return response()->json(['message'=> 'Scholar already exist'], 500);
+
+		} catch (Exception $e) {
+			throw $e;
+		}
 	}
 
 
@@ -25,9 +44,8 @@ class ScholarController extends validateUserCredentials
 		try {
 
 		    $request->validate([
-		    	'scholar_id' => 'required',
+		    	'scholar_id'=> 'required',
 		        'student_id_number' => 'required',
-		        'degree' => 'required',
 		        'lastname' => 'required',
 		        'firstname' => 'required',
 		        'middlename' => 'required',
@@ -36,28 +54,30 @@ class ScholarController extends validateUserCredentials
 		        'age' => 'required|min:2|max:2',
 		        'gender' => 'required|min:4|max:6',
 		        'schoolId' => 'required',
-		        'course_section' => 'required',
+		        'courseId' => 'required',
+		        'section' => 'required',
 		        'year_level' => 'required',
-		        'IP' => 'required',
+		        'IP' => 'required'
 		    ]);
 
-	        $s = scholar::find($request->scholar_id);
-	        $s->student_id_number = $request->student_id_number;
-	        $s->degree = $request->degree;
-	        $s->lastname = $request->lastname;
-	        $s->firstname = $request->firstname;
-	        $s->middlename = $request->middlename;
-	        $s->addressId = $request->addressId;
-	        $s->date_of_birth = $request->date_of_birth;
-	        $s->age = $request->age;
-	        $s->gender = $request->gender;
-	        $s->schoolId  = $request->schoolId;
-	        $s->course_section  = $request->course_section;
-	        $s->year_level  = $request->year_level;
-	        $s->IP = $request->IP;
-	        $s->save();
+	        $scholar = scholar::find($request->scholar_id);
+	        $scholar->student_id_number = $request->student_id_number;
+	        $scholar->degree = $request->degree;
+	        $scholar->lastname = $request->lastname;
+	        $scholar->firstname = $request->firstname;
+	        $scholar->middlename = $request->middlename;
+	        $scholar->addressId = $request->addressId;
+	        $scholar->date_of_birth = $request->date_of_birth;
+	        $scholar->age = $request->age;
+	        $scholar->gender = $request->gender;
+	        $scholar->schoolId  = $request->schoolId;
+	        $scholar->courseId = $request->courseId;
+	        $scholar->section = $request->section;
+	        $scholar->year_level  = $request->year_level;
+	        $scholar->IP = $request->IP;
+	        $scholar->save();
 
-			return $s->updated_at;
+			return $scholar->updated_at;
 
 		} catch (Exception $e) {
 			throw $e;
@@ -78,7 +98,8 @@ class ScholarController extends validateUserCredentials
 		        'age' => 'required|min:2|max:2',
 		        'gender' => 'required|min:4|max:6',
 		        'schoolId' => 'required',
-		        'course_section' => 'required',
+		        'courseId' => 'required',
+		        'section' => 'required',
 		        'year_level' => 'required',
 		        'IP' => 'required',
 		        'father_details' => 'required',
@@ -87,30 +108,32 @@ class ScholarController extends validateUserCredentials
 		        'asc_id' => 'required',
 		    ]);
 
-	        $s = new scholar();
-	        $s->student_id_number = $request->student_id_number;
-	        $s->lastname = $request->lastname;
-	        $s->firstname = $request->firstname;
-	        $s->middlename = $request->middlename;
-	        $s->addressId = $request->addressId;
-	        $s->date_of_birth = $request->date_of_birth;
-	        $s->age = $request->age;
-	        $s->gender = $request->gender;
-	        $s->schoolId  = $request->schoolId;
-	        $s->course_section  = $request->course_section;
-	        $s->year_level  = $request->year_level;
-	        $s->IP = $request->IP;
-	        $s->father_details = $request->father_details;
-	        $s->mother_details = $request->mother_details;
-	        $s->degree = $request->degree;
-	        $s->scholar_status = 'NEW';
-	        $s->contract_status = 'Pre-Approved';
-	        $s->contract_id = $request->contract_id;
-	        $s->last_renewed = $request->asc_id;
-	        $s->sem_year_applied = $request->asc_id;
-	        $s->save();
+	        $scholar = new scholar();
+	        $scholar->student_id_number = $request->student_id_number;
+	        $scholar->lastname = $request->lastname;
+	        $scholar->firstname = $request->firstname;
+	        $scholar->middlename = $request->middlename;
+	        $scholar->addressId = $request->addressId;
+	        $scholar->date_of_birth = $request->date_of_birth;
+	        $scholar->age = $request->age;
+	        $scholar->gender = $request->gender;
+	        $scholar->schoolId  = $request->schoolId;
+	        $scholar->courseId = $request->courseId;
+	        $scholar->section = $request->section;
+	        $scholar->year_level  = $request->year_level;
+	        $scholar->IP = $request->IP;
+	        $scholar->father_details = $request->father_details;
+	        $scholar->mother_details = $request->mother_details;
+	        $scholar->degree = $request->degree;
+	        $scholar->scholar_status = 'NEW';
+	        $scholar->contract_status = 'Pre-Approved';
+	        $scholar->contract_id = $request->contract_id;
+	        $scholar->last_renewed = $request->asc_id;
+	        $scholar->sem_year_applied = $request->asc_id;
+	        $scholar->userId = Auth::id();
+	        $scholar->save();
 
-	        return $s;
+	        return $scholar;
 
 		} catch (Exception $e) {
 			throw $e;
@@ -149,7 +172,7 @@ class ScholarController extends validateUserCredentials
 					}
 
 				})
-				->with(['address', 'school', 'academicyear_semester_contract'])		
+				->with(['address', 'school', 'course', 'academicyear_semester_contract'])		
 				->whereIn('degree', $accessed_degree)
 				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)
@@ -186,16 +209,16 @@ class ScholarController extends validateUserCredentials
 
 
             if ($fileName) {
-            	$s = scholar::findOrFail($request->scholar_id);
-            	$oldfile = $s->photo;
-            	$s->photo = $filePath . $fileName;
-            	$s->save();
+            	$scholar = scholar::findOrFail($request->scholar_id);
+            	$oldfile = $scholar->photo;
+            	$scholar->photo = $filePath . $fileName;
+            	$scholar->save();
 
             	File::delete(storage_path("app/public/".$oldfile));
             }
 
 
-	        return $s->photo;
+	        return $scholar->photo;
         }
 
         return "No file";

@@ -13,7 +13,7 @@ use App\Http\Controllers\API\MunicipalitiesController;
 use App\Http\Controllers\API\AccademiSemesterYearcContractController;
 use App\Http\Controllers\API\ExportScholarsController;
 use App\Http\Controllers\API\dashboardController;
-
+use App\Http\Controllers\API\CourseController;
 
 
 /*
@@ -31,6 +31,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+	Route::get('getAllScholars', [ScholarController::class, 'getAllScholars']);
 	Route::get('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
 	Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
@@ -50,6 +51,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('updateAddress', [AddressController::class, 'updateAddress']);
 	Route::get('getAddresses', [AddressController::class, 'getAddresses']);
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
+
+	Route::post('saveCourse', [CourseController::class, 'saveCourse']);
+	Route::post('updateCourse', [CourseController::class, 'updateCourse']);
+	Route::get('getCourses', [CourseController::class, 'getCourses']);
 
 
 	// Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);

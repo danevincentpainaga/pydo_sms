@@ -13,13 +13,17 @@ class scholar extends Model
 
     protected $fillable = [
         'student_id_number', 'lastname', 'firstname', 'middlename','addressId', 'date_of_birth', 'age', 'gender',
-        'schoolId', 'course_section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'contract_id', 'last_renewed', 'sem_year_applied',
+        'schoolId', 'courseId', 'section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'contract_id', 'last_renewed', 'sem_year_applied',
     ];
 
     protected $casts = [
         'father_details' => 'array',
         'mother_details' => 'array',
     ];
+
+    public function course(){
+        return $this->HasOne(course::class, 'course_id', 'courseId');
+    }
 
     public function school(){
     	return $this->HasOne(school::class, 'school_id', 'schoolId');

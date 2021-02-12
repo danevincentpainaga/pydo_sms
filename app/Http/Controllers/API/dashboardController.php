@@ -42,6 +42,7 @@ class dashboardController extends Controller
 			->join('addresses', 'addresses.address_id', '=', 'scholars.addressId')
 			->where('addresses.municipality', $value->municipality)
 			->whereIn('degree', $degree)
+			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
 			->where('scholar_status', 'NEW')
 			->count();
 
@@ -49,6 +50,7 @@ class dashboardController extends Controller
 			->join('addresses', 'addresses.address_id', '=', 'scholars.addressId')
 			->where('addresses.municipality', $value->municipality)
 			->whereIn('degree', $degree)
+			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
 			->where('scholar_status', 'OLD')
 			->count();
 
