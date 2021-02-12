@@ -172,7 +172,7 @@ class ScholarController extends validateUserCredentials
 					}
 
 				})
-				->with(['address', 'school', 'course', 'academicyear_semester_contract'])		
+				->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,amount'])		
 				->whereIn('degree', $accessed_degree)
 				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)

@@ -57,7 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('getCourses', [CourseController::class, 'getCourses']);
 
 
-	// Route::get('getSearchedSchool/{searched}', [SchoolController::class, 'getSearchedSchool']);
 	Route::get('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
 	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails']);
 	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);

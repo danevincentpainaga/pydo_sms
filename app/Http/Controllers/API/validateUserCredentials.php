@@ -23,7 +23,7 @@ class validateUserCredentials Extends Controller
 	}
 
 	protected function filterScholarDegree($accessedDegree){
-		if ($accessedDegree) 
+		if ($accessedDegree)
 
 			return $accessed_degree = array_values(array_intersect(json_decode(Auth::user()->degree_access), $accessedDegree));
 
