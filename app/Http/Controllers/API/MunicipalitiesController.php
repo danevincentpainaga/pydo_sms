@@ -10,20 +10,26 @@ class MunicipalitiesController extends Controller
 {
     public function getMunicipalities(){
 
-    	$municipalities = array();
-    	$municipal_access = json_decode(Auth::user()->municipal_access);
+    	try {
+    		
+	    	$municipalities = array();
+	    	$municipal_access = json_decode(Auth::user()->municipal_access);
 
-		if ($municipal_access[0] == "*") {
+			if ($municipal_access[0] == "*") {
 
-			return Storage::get('municipalities/municipalities.json');
+				return Storage::get('municipalities/municipalities.json');
 
-		}
+			}
 
-		foreach ($municipal_access as $key) {
-			$municipalities[] =  array('municipality' => $key );
-		}
+			foreach ($municipal_access as $key) {
+				$municipalities[] =  array('municipality' => $key );
+			}
 
-		return $municipalities;
+			return $municipalities;
+
+    	} catch (Exception $e) {
+    		throw $e;
+    	}
 		
     }
 }

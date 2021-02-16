@@ -28,7 +28,8 @@ class AccademiSemesterYearcContractController extends Controller
                     'semester'=> $request->semester,
                     'academic_year'=> $request->academic_year,
                     'state'=> 'Available',
-                    'amount'=> $request->amount,
+                    'undergraduate_amount'=> $request->undergraduate_amount,
+                    'masteral_doctorate_amount'=> $request->masteral_doctorate_amount,
                 ]
             );
 
@@ -46,7 +47,8 @@ class AccademiSemesterYearcContractController extends Controller
             $ays_details = academicyear_semester_contract::find($request->asc_id);
             $ays_details->semester = $request->semester;
             $ays_details->academic_year = $request->academic_year;
-            $ays_details->amount = $request->amount;
+            $ays_details->undergraduate_amount = $request->undergraduate_amount;
+            $ays_details->masteral_doctorate_amount = $request->masteral_doctorate_amount;
             $ays_details->save();
 
             return response()->json(['message'=> 'Update successful!'], 200);

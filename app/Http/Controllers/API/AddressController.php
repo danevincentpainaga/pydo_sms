@@ -11,14 +11,20 @@ use DB;
 class AddressController extends Controller
 {
     public function getAddresses(Request $request){
+        try {
+            
+            $municipalAccess = json_decode(Auth::user()->municipal_access);
 
-    	$municipalAccess = json_decode(Auth::user()->municipal_access);
+            if ($municipalAccess[0] == "*") {
+                return address::where('address', 'LIKE', "{$request->searched}%")->take(10)->get();
+            }
+            
+            return address::whereIn('municipality', $municipalAccess)->where('address', 'LIKE', "{$request->searched}%")->get();
 
-    	if ($municipalAccess[0] == "*") {
-    		return address::where('address', 'LIKE', "{$request->searched}%")->take(10)->get();
-    	}
-    	
-	    return address::whereIn('municipality', $municipalAccess)->where('address', 'LIKE', "{$request->searched}%")->get();
+
+        } catch (Exception $e) {
+            throw $e;
+        }
     }
 
     public function saveAddress(Request $request){
