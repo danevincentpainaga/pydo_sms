@@ -39,20 +39,20 @@ class dashboardController extends Controller
 		foreach ($municipalities as $key => $value) {
 
 		 	$new = DB::table('scholars')
-			->join('addresses', 'addresses.address_id', '=', 'scholars.addressId')
-			->where('addresses.municipality', $value->municipality)
-			->whereIn('degree', $degree)
-			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
-			->where('scholar_status', 'NEW')
-			->count();
+					->join('addresses', 'addresses.address_id', '=', 'scholars.addressId')
+					->where('addresses.municipality', $value->municipality)
+					->whereIn('degree', $degree)
+					->whereIn('contract_status', ['Approved', 'Pre-Approved'])
+					->where('scholar_status', 'NEW')
+					->count();
 
 		 	$old = DB::table('scholars')
-			->join('addresses', 'addresses.address_id', '=', 'scholars.addressId')
-			->where('addresses.municipality', $value->municipality)
-			->whereIn('degree', $degree)
-			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
-			->where('scholar_status', 'OLD')
-			->count();
+					->join('addresses', 'addresses.address_id', '=', 'scholars.addressId')
+					->where('addresses.municipality', $value->municipality)
+					->whereIn('degree', $degree)
+					->whereIn('contract_status', ['Approved', 'Pre-Approved'])
+					->where('scholar_status', 'OLD')
+					->count();
 
 			$scholarsCount['municipalities'][] = $value->municipality;
 			$scholarsCount['scholars_count'][0][] = $new;
@@ -96,16 +96,16 @@ class dashboardController extends Controller
 		foreach ($degree as $key => $value) {
 
 		 	$new = DB::table('scholars')
-			->where('degree', $value)
-			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
-			->where('scholar_status', 'NEW')
-			->count();
+					->where('degree', $value)
+					->whereIn('contract_status', ['Approved', 'Pre-Approved'])
+					->where('scholar_status', 'NEW')
+					->count();
 
 		 	$old = DB::table('scholars')
-			->where('degree', $value)
-			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
-			->where('scholar_status', 'OLD')
-			->count();
+					->where('degree', $value)
+					->whereIn('contract_status', ['Approved', 'Pre-Approved'])
+					->where('scholar_status', 'OLD')
+					->count();
 
 			$scholarsCount['degree'][] = $value;
 			$scholarsCount['scholars_count'][0][] = $new;
@@ -119,9 +119,9 @@ class dashboardController extends Controller
 	private function approvedRecursionQuery($degreeArray, $returnedArray, $count)
 	{
 	 	$data = DB::table('scholars')
-				->where('degree', $degreeArray[$count])
-				->where('contract_status', 'Pre-Approved')
-				->count();
+					->where('degree', $degreeArray[$count])
+					->whereIn('contract_status', ['Pre-Approved', 'Approved'])
+					->count();
 
 		array_push($returnedArray, $data);
 

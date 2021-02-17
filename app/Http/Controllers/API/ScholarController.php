@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
+use App\Http\Requests\validateUpdateScholarsRequest;
+use App\Http\Requests\validateScholarsRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +19,7 @@ class ScholarController extends validateUserCredentials
 		return scholar::all();
 	}
 
-	public function saveNewScholarDetails(Request $request)
+	public function saveNewScholarDetails(validateScholarsRequest $request)
 	{
 		try {
 
@@ -39,26 +41,9 @@ class ScholarController extends validateUserCredentials
 	}
 
 
-	public function updateScholarDetails(Request $request)
+	public function updateScholarDetails(validateUpdateScholarsRequest $request)
 	{
 		try {
-
-		    $request->validate([
-		    	'scholar_id'=> 'required',
-		        'student_id_number' => 'required',
-		        'lastname' => 'required',
-		        'firstname' => 'required',
-		        'middlename' => 'required',
-		        'addressId' => 'required',
-		        'date_of_birth' => 'required|min:10|max:10',
-		        'age' => 'required|min:2|max:2',
-		        'gender' => 'required|min:4|max:6',
-		        'schoolId' => 'required',
-		        'courseId' => 'required',
-		        'section' => 'required',
-		        'year_level' => 'required',
-		        'IP' => 'required'
-		    ]);
 
 	        $scholar = scholar::find($request->scholar_id);
 	        $scholar->student_id_number = $request->student_id_number;
@@ -87,26 +72,6 @@ class ScholarController extends validateUserCredentials
 	private function saveDetails($request)
 	{
 		try {
-
-		    $request->validate([
-		        'student_id_number' => 'required',
-		        'lastname' => 'required',
-		        'firstname' => 'required',
-		        'middlename' => 'required',
-		        'addressId' => 'required',
-		        'date_of_birth' => 'required|min:10|max:10',
-		        'age' => 'required|min:2|max:2',
-		        'gender' => 'required|min:4|max:6',
-		        'schoolId' => 'required',
-		        'courseId' => 'required',
-		        'section' => 'required',
-		        'year_level' => 'required',
-		        'IP' => 'required',
-		        'father_details' => 'required',
-		        'mother_details' => 'required',
-		        'degree' => 'required',
-		        'asc_id' => 'required',
-		    ]);
 
 	        $scholar = new scholar();
 	        $scholar->student_id_number = $request->student_id_number;
