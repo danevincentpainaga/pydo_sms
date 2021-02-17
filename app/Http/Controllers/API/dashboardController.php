@@ -68,6 +68,54 @@ class dashboardController extends Controller
 		return $this->approvedRecursionQuery(['undergraduate', 'Masters', 'Doctorate'], [], 0);
 	}
 
+	public function getContractStatusTotalPerDegree()
+	{
+	 	$total_count = DB::select(
+	 						DB::raw("SELECT degree,
+		 								SUM(CASE WHEN contract_status = 'Pre-Approved' THEN 1 ELSE 0 END) pre_approved,
+		 								SUM(CASE WHEN contract_status = 'Approved' THEN 1 ELSE 0 END) approved,
+		 								SUM(CASE WHEN contract_status = 'Pending' THEN 1 ELSE 0 END) pending,
+		 								SUM(CASE WHEN contract_status = 'In-Active' THEN 1 ELSE 0 END) in_active
+		 								FROM scholars GROUP BY degree"
+	 								)
+	 							);
+
+		return $total_count;
+	}
+
+	public function getNewOldTotalPerDegree()
+	{
+
+		$scholarsCount = [
+			'degree' => [],
+			'scholars_count' => [[],[]]
+		];
+
+		$degree = ['undergraduate', 'Masters', 'Doctorate'];
+
+		foreach ($degree as $key => $value) {
+
+		 	$new = DB::table('scholars')
+			->where('degree', $value)
+			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
+			->where('scholar_status', 'NEW')
+			->count();
+
+		 	$old = DB::table('scholars')
+			->where('degree', $value)
+			->whereIn('contract_status', ['Approved', 'Pre-Approved'])
+			->where('scholar_status', 'OLD')
+			->count();
+
+			$scholarsCount['degree'][] = $value;
+			$scholarsCount['scholars_count'][0][] = $new;
+			$scholarsCount['scholars_count'][1][] = $old;
+
+		}
+
+		return $scholarsCount;
+	}
+
 	private function approvedRecursionQuery($degreeArray, $returnedArray, $count)
 	{
 	 	$data = DB::table('scholars')

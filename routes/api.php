@@ -92,5 +92,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::get('undergraduateScholarsCount', [dashboardController::class, 'undergraduateScholarsCount']);
 	Route::get('mastersScholarsCount', [dashboardController::class, 'mastersScholarsCount']);
 	Route::get('getApprovedScholarsCount', [dashboardController::class, 'getApprovedScholarsCount']);
+	Route::get('getNewOldTotalPerDegree', [dashboardController::class, 'getNewOldTotalPerDegree']);
+	Route::get('getContractStatusTotalPerDegree', [dashboardController::class, 'getContractStatusTotalPerDegree']);
 	
 });
