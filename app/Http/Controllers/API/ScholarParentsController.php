@@ -23,6 +23,12 @@ class ScholarParentsController extends Controller
 
 		try {
 
+	        $request->validate([
+	        	'scholar_id' => 'required',
+	        	'father_details' => 'required',
+	            'mother_details' => 'required',
+	        ]);
+
 			$s = scholar::find($request->scholar_id);
 			$s->father_details = $request->father_details;
 			$s->mother_details = $request->mother_details;

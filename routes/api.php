@@ -7,10 +7,10 @@ use App\Http\Controllers\API\SchoolController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\ScholarController;
 use App\Http\Controllers\API\ScholarParentsController;
-use App\Http\Controllers\API\AccademicContractController;
+use App\Http\Controllers\API\AcademicContractController;
 use App\Http\Controllers\API\UserAccountsController;
 use App\Http\Controllers\API\MunicipalitiesController;
-use App\Http\Controllers\API\AccademiSemesterYearcContractController;
+use App\Http\Controllers\API\AcademicSemesterYearContractController;
 use App\Http\Controllers\API\ExportScholarsController;
 use App\Http\Controllers\API\dashboardController;
 use App\Http\Controllers\API\CourseController;
@@ -65,16 +65,16 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
 	
 	
-	Route::get('getAcademicContractDetails', [AccademicContractController::class, 'getAcademicContractDetails']);
-	Route::get('getAcademicYearList', [AccademiSemesterYearcContractController::class, 'getAcademicYearList']);
-	Route::post('saveAcademicYearList', [AccademiSemesterYearcContractController::class, 'saveAcademicYearList'])->middleware('admin');
-	Route::post('updateAcademicYearList', [AccademiSemesterYearcContractController::class, 'updateAcademicYearList'])->middleware('admin');
+	Route::get('getAcademicContractDetails', [AcademicContractController::class, 'getAcademicContractDetails']);
+	Route::get('getAcademicYearList', [AcademicSemesterYearContractController::class, 'getAcademicYearList']);
+	Route::post('saveAcademicYearList', [AcademicSemesterYearContractController::class, 'saveAcademicYearList'])->middleware('admin');
+	Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin');
 
 
-	Route::post('setContract', [AccademicContractController::class, 'setContract'])->middleware('admin');
-	Route::post('closeContract', [AccademicContractController::class, 'closeContract'])->middleware('admin');
-	Route::post('openContract', [AccademicContractController::class, 'openContract'])->middleware('admin');
-	Route::post('confirmPassword', [AccademicContractController::class, 'confirmPassword'])->middleware('admin');
+	Route::post('setContract', [AcademicContractController::class, 'setContract'])->middleware('admin');
+	Route::post('closeContract', [AcademicContractController::class, 'closeContract'])->middleware('admin');
+	Route::post('openContract', [AcademicContractController::class, 'openContract'])->middleware('admin');
+	Route::post('confirmPassword', [AcademicContractController::class, 'confirmPassword'])->middleware('admin');
 	
 
 	Route::get('getDegrees', function(){

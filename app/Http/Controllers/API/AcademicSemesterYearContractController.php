@@ -4,16 +4,17 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\ValidateAcademiSemesterYearContractRequest;
 use App\Models\academicyear_semester_contract;
 
-class AccademiSemesterYearcContractController extends Controller
+class AcademicSemesterYearContractController extends Controller
 {
     public function getAcademicYearList()
     {
     	return academicyear_semester_contract::all();
     }
 
-    public function saveAcademicYearList(Request $request)
+    public function saveAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
     {
         try {
             
@@ -40,7 +41,7 @@ class AccademiSemesterYearcContractController extends Controller
         }
     }
 
-    public function updateAcademicYearList(Request $request)
+    public function updateAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
     {
         try {
 

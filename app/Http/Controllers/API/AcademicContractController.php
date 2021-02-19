@@ -14,7 +14,7 @@ use App\Models\scholar;
 use App\Models\User;
 use DB;
 
-class AccademicContractController extends Controller
+class AcademicContractController extends Controller
 {
 
     public function confirmPassword(Request $request){
@@ -54,6 +54,10 @@ class AccademicContractController extends Controller
     {
         
         try {
+
+            $request->validate([
+                'ascId' => 'required',
+            ]);
 
             $state = academicyear_semester_contract::find($request->ascId);
 

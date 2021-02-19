@@ -23,7 +23,7 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-			$scholarExist = scholar::where(['lastname' => $request->lastname, 'firstname' => $request->firstname, 'middlename' => $request->middlename])->first();
+			$scholarExist = scholar::where(['lastname' => $request->lastname, 'firstname' => $request->firstname, 'middlename' => $request->middlename])->count();
 
 			if(!$scholarExist){
 
