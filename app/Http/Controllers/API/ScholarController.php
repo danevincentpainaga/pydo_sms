@@ -73,32 +73,31 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-	        $scholar = new scholar();
-	        $scholar->student_id_number = $request->student_id_number;
-	        $scholar->lastname = $request->lastname;
-	        $scholar->firstname = $request->firstname;
-	        $scholar->middlename = $request->middlename;
-	        $scholar->addressId = $request->addressId;
-	        $scholar->date_of_birth = $request->date_of_birth;
-	        $scholar->age = $request->age;
-	        $scholar->gender = $request->gender;
-	        $scholar->schoolId  = $request->schoolId;
-	        $scholar->courseId = $request->courseId;
-	        $scholar->section = $request->section;
-	        $scholar->year_level  = $request->year_level;
-	        $scholar->IP = $request->IP;
-	        $scholar->father_details = $request->father_details;
-	        $scholar->mother_details = $request->mother_details;
-	        $scholar->degree = $request->degree;
-	        $scholar->scholar_status = 'NEW';
-	        $scholar->contract_status = 'Pre-Approved';
-	        $scholar->contract_id = $request->contract_id;
-	        $scholar->last_renewed = $request->asc_id;
-	        $scholar->sem_year_applied = $request->asc_id;
-	        $scholar->userId = Auth::id();
-	        $scholar->save();
+			return scholar::create([
+		        'student_id_number' => $request->student_id_number,
+		        'lastname' => $request->lastname,
+		        'firstname' => $request->firstname,
+		        'middlename' => $request->middlename,
+		        'addressId' => $request->addressId,
+		        'date_of_birth' => $request->date_of_birth,
+		        'age' => $request->age,
+		        'gender' => $request->gender,
+		        'schoolId' => $request->schoolId,
+		        'courseId' => $request->courseId,
+		        'section' => $request->section,
+		        'year_level' => $request->year_level,
+		        'IP' => $request->IP,
+		        'father_details' => json_encode($request->father_details),
+		        'mother_details' => json_encode($request->mother_details),
+		        'degree' => $request->degree,
+		        'scholar_status' => 'NEW',
+		        'contract_status' => 'Pre-Approved',
+		        'contract_id' => $request->contract_id,
+		        'last_renewed' => $request->asc_id,
+		        'sem_year_applied' => $request->asc_id,
+		        'userId' => Auth::id()
 
-	        return $scholar;
+			]);
 
 		} catch (Exception $e) {
 			throw $e;

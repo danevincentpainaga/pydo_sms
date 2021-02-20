@@ -12,6 +12,7 @@ use App\Http\Controllers\API\UserAccountsController;
 use App\Http\Controllers\API\MunicipalitiesController;
 use App\Http\Controllers\API\AcademicSemesterYearContractController;
 use App\Http\Controllers\API\ExportScholarsController;
+use App\Http\Controllers\API\ImportScholarsController;
 use App\Http\Controllers\API\dashboardController;
 use App\Http\Controllers\API\CourseController;
 
@@ -83,7 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 	Route::get('getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
-
+	Route::post('importScholars', [ImportScholarsController::class, 'importScholars']);
 
 	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 	Route::post('logout', [AuthController::class, 'logout']);
