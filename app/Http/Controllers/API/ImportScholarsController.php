@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\scholar;
+use App\Models\address;
 use DB;
 
 class ImportScholarsController extends Controller
@@ -26,6 +27,8 @@ class ImportScholarsController extends Controller
 				$scholar['contract_status'] = 'Pre-Approved';
 				$scholar['last_renewed'] = $scholar['contract_id'];
 				$scholar['sem_year_applied'] = $scholar['contract_id'];
+				$scholar['created_at'] = now()->toDateTimeString();
+				$scholar['updated_at'] = now()->toDateTimeString();
 				$scholar['userId'] = Auth::id();
 
 				$imported_scholars[] = $scholar; 
@@ -50,5 +53,20 @@ class ImportScholarsController extends Controller
 		}
 
 	}
+
+	public function getAllScholars(Request $request){
+		return scholar::where('degree', $request->degree)->get();
+	}
+
+    public function getAddresses(Request $request){
+        try {
+
+            return address::where('municipality', $request->municipality)->get();
+
+
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 
 }

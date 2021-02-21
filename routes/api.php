@@ -32,7 +32,7 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-	Route::get('getAllScholars', [ScholarController::class, 'getAllScholars']);
+	// Route::get('getAllScholars', [ScholarController::class, 'getAllScholars']);
 	Route::get('getScholars', [ScholarController::class, 'getScholars']);
 	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
 	Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
@@ -85,6 +85,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::get('getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
 	Route::post('importScholars', [ImportScholarsController::class, 'importScholars']);
+	Route::get('getAllScholars', [ImportScholarsController::class, 'getAllScholars']);
+	Route::get('import/getAddresses', [ImportScholarsController::class, 'getAddresses']);
 
 	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 	Route::post('logout', [AuthController::class, 'logout']);

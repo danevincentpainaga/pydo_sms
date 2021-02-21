@@ -15,9 +15,9 @@ use DB;
 class ScholarController extends validateUserCredentials
 {
 
-	public function getAllScholars(){
-		return scholar::all();
-	}
+	// public function getAllScholars(){
+	// 	return scholar::all();
+	// }
 
 	public function saveNewScholarDetails(validateScholarsRequest $request)
 	{
