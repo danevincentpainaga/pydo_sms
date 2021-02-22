@@ -11,6 +11,7 @@ class ExportScholarsController extends validateUserCredentials
 
 	public function getScholarsToExport(Request $request)
 	{
+		$result = [];
 		$accessed_degree = json_decode(Auth::user()->degree_access);
 		$municipalities_access = $this->filteredMunicipality($request->municipality);
 		
@@ -38,10 +39,15 @@ class ExportScholarsController extends validateUserCredentials
 					$query->where('IP', 'LIKE', $request->IP);
 					$query->where('schoolId', 'LIKE', $request->schoolId);
 					$query->where('degree', 'LIKE', $request->degree);
-					$query->orderBy('lastname');
-					
-		return $query->get();
-
+					$query->orderBy('lastname')->chunk(5000, function ($scholars) use (&$result){
+						$result[] = $scholars->toArray();
+						// foreach ($scholars as $scholar) {
+						// 	$result[] = $scholar;
+						// }
+					});
+						
+		// return $query->get();
+		return $result;
 	}
 
 }
