@@ -29,7 +29,7 @@ class ScholarParentsController extends Controller
 	            'mother_details' => 'required',
 	        ]);
 
-			$s = scholar::find($request->scholar_id);
+			$s = scholar::findOrFail($request->scholar_id);
 			$s->father_details = $request->father_details;
 			$s->mother_details = $request->mother_details;
 			$s->save();

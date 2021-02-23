@@ -14,7 +14,7 @@ class AcademicSemesterYearContractController extends Controller
     	return academicyear_semester_contract::all();
     }
 
-    public function saveAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
+    public function storeAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
     {
         try {
             
@@ -45,7 +45,7 @@ class AcademicSemesterYearContractController extends Controller
     {
         try {
 
-            $ays_details = academicyear_semester_contract::find($request->asc_id);
+            $ays_details = academicyear_semester_contract::findOrFail($request->asc_id);
             $ays_details->semester = $request->semester;
             $ays_details->academic_year = $request->academic_year;
             $ays_details->undergraduate_amount = $request->undergraduate_amount;

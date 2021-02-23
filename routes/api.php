@@ -32,70 +32,102 @@ Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-	// Route::get('getAllScholars', [ScholarController::class, 'getAllScholars']);
-	Route::get('getScholars', [ScholarController::class, 'getScholars']);
-	Route::post('saveNewScholarDetails', [ScholarController::class, 'saveNewScholarDetails']);
-	Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
-	Route::post('uploadProfilePic', [ScholarController::class, 'uploadProfilePic']);
-	
+	Route::group(['prefix' => 'scholars'], function () {
 
-	Route::get('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
-	Route::get('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
+		Route::get('getScholars', [ScholarController::class, 'getScholars']);
+		Route::post('storeNewScholarDetails', [ScholarController::class, 'storeNewScholarDetails']);
+		Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
+		Route::post('uploadProfilePic', [ScholarController::class, 'uploadProfilePic']);
+		Route::get('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
+		Route::get('getNewMastersDoctorateScholars', [ScholarController::class, 'getNewMastersDoctorateScholars']);
+		
+	});
+
+	Route::group(['prefix' => 'parents'], function () {
+
+		Route::get('getMotherList', [ScholarParentsController::class, 'getMotherList']);
+		Route::get('getFatherList', [ScholarParentsController::class, 'getFatherList']);
+		Route::post('updateScholarParentsDetails', [ScholarParentsController::class, 'updateScholarParentsDetails']);
+
+	});
+
+	Route::group(['prefix' => 'address'], function () {
+
+		Route::post('storeAddress', [AddressController::class, 'storeAddress']);
+		Route::post('updateAddress', [AddressController::class, 'updateAddress']);
+		Route::get('getAddresses', [AddressController::class, 'getAddresses']);
+		
+	});
+
+	Route::group(['prefix' => 'course'], function () {
+
+		Route::post('storeCourse', [CourseController::class, 'storeCourse']);
+		Route::post('updateCourse', [CourseController::class, 'updateCourse']);
+		Route::get('getCourses', [CourseController::class, 'getCourses']);
+		
+	});
+
+	Route::group(['prefix' => 'school'], function () {
+
+		Route::get('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
+		Route::post('storeSchoolDetails', [SchoolController::class, 'storeSchoolDetails']);
+		Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);
+		
+	});
 
 
-	Route::get('getMotherList', [ScholarParentsController::class, 'getMotherList']);
-	Route::get('getFatherList', [ScholarParentsController::class, 'getFatherList']);
-	Route::post('updateScholarParentsDetails', [ScholarParentsController::class, 'updateScholarParentsDetails']);
+	Route::group(['prefix' => 'academic'], function () {
 
-	
-	Route::post('saveAddress', [AddressController::class, 'saveAddress']);
-	Route::post('updateAddress', [AddressController::class, 'updateAddress']);
-	Route::get('getAddresses', [AddressController::class, 'getAddresses']);
-	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
-
-	Route::post('saveCourse', [CourseController::class, 'saveCourse']);
-	Route::post('updateCourse', [CourseController::class, 'updateCourse']);
-	Route::get('getCourses', [CourseController::class, 'getCourses']);
+		Route::get('getAcademicContractDetails', [AcademicContractController::class, 'getAcademicContractDetails']);
+		Route::get('getAcademicYearList', [AcademicSemesterYearContractController::class, 'getAcademicYearList']);
+		Route::post('storeAcademicYearList', [AcademicSemesterYearContractController::class, 'storeAcademicYearList'])->middleware('admin');
+		Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin');
+		
+	});
 
 
-	Route::get('getListOfSchool', [SchoolController::class, 'getListOfSchool']);
-	Route::post('saveSchoolDetails', [SchoolController::class, 'saveSchoolDetails']);
-	Route::post('updateSchoolDetails', [SchoolController::class, 'updateSchoolDetails']);
-	
+	Route::group(['prefix' => 'contract'], function () {
+
+		Route::post('setContract', [AcademicContractController::class, 'setContract'])->middleware('admin');
+		Route::post('closeContract', [AcademicContractController::class, 'closeContract'])->middleware('admin');
+		Route::post('openContract', [AcademicContractController::class, 'openContract'])->middleware('admin');
+		Route::post('confirmPassword', [AcademicContractController::class, 'confirmPassword'])->middleware('admin');
+			
+	});
+
+	Route::group(['prefix' => 'import'], function () {
+
+		Route::post('importScholars', [ImportScholarsController::class, 'importScholars']);
+		Route::get('getAllScholars', [ImportScholarsController::class, 'getAllScholars']);
+		Route::get('getAddresses', [ImportScholarsController::class, 'getAddresses']);
+		
+	});
+
+
+	Route::group(['prefix' => 'dashboard'], function () {
+
+		Route::get('undergraduateScholarsCount', [dashboardController::class, 'undergraduateScholarsCount']);
+		Route::get('mastersScholarsCount', [dashboardController::class, 'mastersScholarsCount']);
+		Route::get('getApprovedScholarsCount', [dashboardController::class, 'getApprovedScholarsCount']);
+		Route::get('getNewOldTotalPerDegree', [dashboardController::class, 'getNewOldTotalPerDegree']);
+		Route::get('getContractStatusTotalPerDegree', [dashboardController::class, 'getContractStatusTotalPerDegree']);
+		
+	});
+
 
 	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
+
+	Route::get('export/getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
+
+	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
 	
 	
-	Route::get('getAcademicContractDetails', [AcademicContractController::class, 'getAcademicContractDetails']);
-	Route::get('getAcademicYearList', [AcademicSemesterYearContractController::class, 'getAcademicYearList']);
-	Route::post('saveAcademicYearList', [AcademicSemesterYearContractController::class, 'saveAcademicYearList'])->middleware('admin');
-	Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin');
-
-
-	Route::post('setContract', [AcademicContractController::class, 'setContract'])->middleware('admin');
-	Route::post('closeContract', [AcademicContractController::class, 'closeContract'])->middleware('admin');
-	Route::post('openContract', [AcademicContractController::class, 'openContract'])->middleware('admin');
-	Route::post('confirmPassword', [AcademicContractController::class, 'confirmPassword'])->middleware('admin');
+	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
+	Route::post('logout', [AuthController::class, 'logout']);
 	
-
+	
 	Route::get('getDegrees', function(){
 		return Auth::user()->degree_access;
 	});
 
-
-	Route::get('getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
-	Route::post('importScholars', [ImportScholarsController::class, 'importScholars']);
-	Route::get('getAllScholars', [ImportScholarsController::class, 'getAllScholars']);
-	Route::get('import/getAddresses', [ImportScholarsController::class, 'getAddresses']);
-
-	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
-	Route::post('logout', [AuthController::class, 'logout']);
-
-
-	Route::get('undergraduateScholarsCount', [dashboardController::class, 'undergraduateScholarsCount']);
-	Route::get('mastersScholarsCount', [dashboardController::class, 'mastersScholarsCount']);
-	Route::get('getApprovedScholarsCount', [dashboardController::class, 'getApprovedScholarsCount']);
-	Route::get('getNewOldTotalPerDegree', [dashboardController::class, 'getNewOldTotalPerDegree']);
-	Route::get('getContractStatusTotalPerDegree', [dashboardController::class, 'getContractStatusTotalPerDegree']);
-	
 });

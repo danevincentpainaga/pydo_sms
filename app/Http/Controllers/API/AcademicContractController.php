@@ -59,7 +59,7 @@ class AcademicContractController extends Controller
                 'ascId' => 'required',
             ]);
 
-            $state = academicyear_semester_contract::find($request->ascId);
+            $state = academicyear_semester_contract::findOrFail($request->ascId);
 
             if ($state->state != 'Available') {
                return response()->json(['message' => 'Failed! Cannot set contract.'], 500);

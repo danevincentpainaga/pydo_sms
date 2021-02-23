@@ -14,7 +14,7 @@ class CourseController extends Controller
         return course::where('course', 'LIKE', "%{$request->searched}%")->get();
     }
 
-    public function saveCourse(Request $request){
+    public function storeCourse(Request $request){
 
         $request->validate([
             'course' => 'required',

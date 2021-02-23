@@ -27,7 +27,7 @@ class AddressController extends Controller
         }
     }
 
-    public function saveAddress(Request $request){
+    public function storeAddress(Request $request){
 
     	$request->validate([
 	    	'address' => 'required',

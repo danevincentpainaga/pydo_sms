@@ -14,7 +14,7 @@ class SchoolController extends Controller
     	return school::where('school_name', 'LIKE', "%{$request->searched_school}%")->limit(7)->get();
     }
 
-     public function saveSchoolDetails(Request $request)
+     public function storeSchoolDetails(Request $request)
      {
 
         $request->validate([
@@ -33,7 +33,7 @@ class SchoolController extends Controller
             'school_name' => 'required',
         ]);
 
-        $school = school::find($request->school_id);
+        $school = school::findOrFail($request->school_id);
         $school->school_name = $request->school_name;
         $school->save();
         

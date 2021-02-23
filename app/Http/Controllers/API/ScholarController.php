@@ -15,11 +15,7 @@ use DB;
 class ScholarController extends validateUserCredentials
 {
 
-	// public function getAllScholars(){
-	// 	return scholar::all();
-	// }
-
-	public function saveNewScholarDetails(validateScholarsRequest $request)
+	public function storeNewScholarDetails(validateScholarsRequest $request)
 	{
 		try {
 
@@ -45,7 +41,7 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-	        $scholar = scholar::find($request->scholar_id);
+	        $scholar = scholar::findOrFail($request->scholar_id);
 	        $scholar->student_id_number = $request->student_id_number;
 	        $scholar->degree = $request->degree;
 	        $scholar->lastname = $request->lastname;
