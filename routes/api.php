@@ -78,7 +78,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'academic'], function () {
 
-		Route::get('getAcademicContractDetails', [AcademicContractController::class, 'getAcademicContractDetails']);
 		Route::get('getAcademicYearList', [AcademicSemesterYearContractController::class, 'getAcademicYearList']);
 		Route::post('storeAcademicYearList', [AcademicSemesterYearContractController::class, 'storeAcademicYearList'])->middleware('admin');
 		Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin');
@@ -88,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'contract'], function () {
 
+		Route::get('getAcademicContractDetails', [AcademicContractController::class, 'getAcademicContractDetails']);
 		Route::post('setContract', [AcademicContractController::class, 'setContract'])->middleware('admin');
 		Route::post('closeContract', [AcademicContractController::class, 'closeContract'])->middleware('admin');
 		Route::post('openContract', [AcademicContractController::class, 'openContract'])->middleware('admin');
