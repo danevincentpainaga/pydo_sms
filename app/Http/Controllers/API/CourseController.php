@@ -20,7 +20,17 @@ class CourseController extends Controller
             'course' => 'required',
         ]);
 
-        return course::create($request->all());
+
+        $course = trim(preg_replace('/[^a-z]/i', '', $request->course));
+
+        $result = course::whereRaw("REPLACE(`course`, ' ', '') = ? ", $course )->first();
+
+        if ($result) {
+            return response()->json(["message" => $request->course ." already exist"], 500);
+        }
+
+        return course::create([ 'course'=>  trim(preg_replace('/[^a-z\s]/i', '',$request->course)) ]);
+
     }
 
     public function updateCourse(Request $request){

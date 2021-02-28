@@ -19,7 +19,9 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-			$scholarExist = scholar::where(['lastname' => $request->lastname, 'firstname' => $request->firstname, 'middlename' => $request->middlename])->count();
+
+
+			$scholarExist = scholar::where(['lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname), 'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname), 'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename)])->count();
 
 			if(!$scholarExist){
 
@@ -44,9 +46,9 @@ class ScholarController extends validateUserCredentials
 	        $scholar = scholar::findOrFail($request->scholar_id);
 	        $scholar->student_id_number = $request->student_id_number;
 	        $scholar->degree = $request->degree;
-	        $scholar->lastname = $request->lastname;
-	        $scholar->firstname = $request->firstname;
-	        $scholar->middlename = $request->middlename;
+	        $scholar->lastname = $this->trimAndAcceptLettersSpacesOnly($request->lastname);
+	        $scholar->firstname = $this->trimAndAcceptLettersSpacesOnly($request->firstname);
+	        $scholar->middlename = $this->trimAndAcceptLettersSpacesOnly($request->middlename);
 	        $scholar->addressId = $request->addressId;
 	        $scholar->date_of_birth = $request->date_of_birth;
 	        $scholar->age = $request->age;
@@ -71,9 +73,9 @@ class ScholarController extends validateUserCredentials
 
 			return scholar::create([
 		        'student_id_number' => $request->student_id_number,
-		        'lastname' => $request->lastname,
-		        'firstname' => $request->firstname,
-		        'middlename' => $request->middlename,
+		        'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
+		        'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
+		        'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
 		        'addressId' => $request->addressId,
 		        'date_of_birth' => $request->date_of_birth,
 		        'age' => $request->age,
@@ -183,6 +185,10 @@ class ScholarController extends validateUserCredentials
 
         return "No file";
 
+    }
+
+    private function trimAndAcceptLettersSpacesOnly($value){
+		return trim(preg_replace('/[^a-z\s]/i', '', $value));
     }
 
     private function createFilename(UploadedFile $file)

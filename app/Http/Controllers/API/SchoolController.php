@@ -17,11 +17,26 @@ class SchoolController extends Controller
      public function storeSchoolDetails(Request $request)
      {
 
-        $request->validate([
-            'school_name' => 'required',
-        ]);
+        try {
 
-    	return school::create($request->all());
+            $request->validate([
+                'school_name' => 'required',
+            ]);
+
+
+            $schoolname = trim(preg_replace('/[^a-z-]/i', '', $request->school_name));
+
+            $result = school::whereRaw("REPLACE(`school_name`, ' ', '') = ? ", $schoolname )->first();
+
+            if ($result) {
+                return response()->json(["message" => $request->school_name ." already exist"], 500);
+            }
+
+            return school::create([ 'school_name'=>  trim(preg_replace('/[^a-z\s-]/i', '',$request->school_name)) ]);
+
+        } catch (Exception $e) {
+            throw $e;
+        }
 
     }
 

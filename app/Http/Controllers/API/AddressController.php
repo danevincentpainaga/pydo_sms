@@ -34,7 +34,19 @@ class AddressController extends Controller
 	    	'municipality' => 'required',
 		]);
 
-    	return address::create($request->all());
+        $address = trim(preg_replace('/[^a-z]/i', '', $request->address));
+
+        $result = address::whereRaw("REPLACE(`address`, ' ', '') = ? ", $address )->first();
+
+        if ($result) {
+            return response()->json(["message" => $request->address ." already exist"], 500);
+        }
+
+        return address::create([
+            'address'=>  trim(preg_replace('/[^a-z\s.-d]/i', '',$request->address)),
+            'municipality' => $request->municipality,
+        ]);
+
     }
 
     public function updateAddress(Request $request){
