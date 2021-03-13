@@ -27,7 +27,6 @@ class validateScholarsRequest extends FormRequest
             'student_id_number' => 'required',
             'lastname' => 'required',
             'firstname' => 'required',
-            'middlename' => 'required',
             'addressId' => 'required',
             'date_of_birth' => 'required|min:10|max:10',
             'age' => 'required|min:2|max:2',
