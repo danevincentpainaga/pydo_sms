@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\scholar;
 use App\Models\address;
+use App\Models\course;
 use DB;
 
 class ImportScholarsController extends Controller
@@ -89,6 +90,10 @@ class ImportScholarsController extends Controller
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    public function getCourses(Request $request){
+        return course::where('course_degree', $request->degree)->get();
     }
 
 }

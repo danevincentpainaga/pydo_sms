@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::post('storeCourse', [CourseController::class, 'storeCourse']);
 		Route::post('updateCourse', [CourseController::class, 'updateCourse']);
 		Route::get('getCourses', [CourseController::class, 'getCourses']);
+		Route::get('getCoursesList', [CourseController::class, 'getCoursesList']);
 		
 	});
 
@@ -100,6 +101,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::post('importScholars', [ImportScholarsController::class, 'importScholars']);
 		Route::get('getAllScholars', [ImportScholarsController::class, 'getAllScholars']);
 		Route::get('getAddresses', [ImportScholarsController::class, 'getAddresses']);
+		Route::get('getCourses', [ImportScholarsController::class, 'getCourses']);
 		
 	});
 
