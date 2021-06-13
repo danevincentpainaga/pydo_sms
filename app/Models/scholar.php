@@ -16,10 +16,10 @@ class scholar extends Model
         'schoolId', 'courseId', 'section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'contract_id', 'last_renewed', 'sem_year_applied', 'userId',
     ];
 
-    // protected $casts = [
-    //     'father_details' => 'array',
-    //     'mother_details' => 'array',
-    // ];
+    protected $casts = [
+        'father_details' => 'array',
+        'mother_details' => 'array',
+    ];
 
     public function course(){
         return $this->HasOne(course::class, 'course_id', 'courseId');
