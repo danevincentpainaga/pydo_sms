@@ -21,7 +21,7 @@ class AcademicSemesterYearContractController extends Controller
             $asc = academicyear_semester_contract::whereIn('state', ['Available', 'Selected'])->count();
 
             if ($asc > 0) {
-               return response()->json(['message'=> 'Failed! Cannot create more than one contract.'], 500);
+               return response()->json(['message'=> 'Failed! Cannot create more than one contract.'], 403);
             }
 
             academicyear_semester_contract::create(

@@ -125,6 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	
 	
 	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
+	Route::post('confirmIsAdminAccess', [AuthController::class, 'isAdminAccess']);
 	Route::post('logout', [AuthController::class, 'logout']);
 	
 	

@@ -41,4 +41,12 @@ class AuthController extends Controller
     public function logout(Request $request){
     	return $request->user()->currentAccessToken()->delete();
     }
+
+    public function isAdminAccess(Request $request){
+	    if (!Hash::check($request->password, Auth::user()->password)) {
+			return response()->json(['message'=> 'Incorrect password'], 403 );
+	    }
+
+		return true;
+    }
 }
