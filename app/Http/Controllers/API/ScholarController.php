@@ -19,8 +19,6 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-
-
 			$scholarExist = scholar::where(['lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname), 'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname), 'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename)])->count();
 
 			if(!$scholarExist){
@@ -31,7 +29,7 @@ class ScholarController extends validateUserCredentials
 
 			}
 
-			return response()->json(['message'=> 'Scholar already exist'], 500);
+			return response()->json(['message'=> 'Scholar already exist'], 403);
 
 		} catch (Exception $e) {
 			throw $e;
@@ -104,12 +102,12 @@ class ScholarController extends validateUserCredentials
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 3, ["Undergraduate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 10, ["Undergraduate"]);
 	}
 
 	public function getNewMastersDoctorateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 3, ["Masters", "Doctorate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 10, ["Masters", "Doctorate"]);
 	}
 
 	public function getScholars(Request $request)
