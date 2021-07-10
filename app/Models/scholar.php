@@ -40,4 +40,5 @@ class scholar extends Model
     public function activated_contract(){
         return $this->belongsTo(activated_contract::class, 'contract_id', 'activated_contract_id');
     }
+    
 }

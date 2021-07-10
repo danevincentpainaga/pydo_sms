@@ -44,14 +44,15 @@ class ExportScholarsController extends validateUserCredentials
 					// $query->where('year_level', 'LIKE', $request->year_level);
 					// $query->where('IP', 'LIKE', $request->IP);
 					// $query->where('schoolId', 'LIKE', $request->schoolId);
-					$query->orderBy('lastname')->chunk(50000, function ($scholars) use (&$result){
+					$query->orderBy('lastname')->chunk(3, function ($scholars) use (&$result){
 						$result[] = $scholars->toArray();
 						// foreach ($scholars as $scholar) {
+						// 	$scholar->father_details = json_decode($scholar->father_details);
+						// 	$scholar->mother_details = json_decode($scholar->mother_details);
 						// 	$result[] = $scholar;
 						// }
 					});
 						
-		// return $query->get();
 		return $result;
 	}
 

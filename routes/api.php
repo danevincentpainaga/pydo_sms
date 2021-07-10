@@ -30,6 +30,10 @@ use App\Http\Controllers\API\CourseController;
 
 Route::post('login', [AuthController::class, 'login']);
 
+Route::get('login',function(){
+	return abort(404);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'scholars'], function () {

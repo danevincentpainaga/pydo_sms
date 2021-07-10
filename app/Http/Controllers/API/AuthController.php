@@ -24,12 +24,8 @@ class AuthController extends Controller
 	    }
 
 	    $success = $user->createToken('pydo_appKey')->plainTextToken;
-		return response()->json(
-		 							[
-		 								'success'=>$success
-		 							], 
-		 							200
-		 						);
+
+		return response()->json(['success'=>$success], 200);
     }
 
     public function getAuthenticatedUser(){
