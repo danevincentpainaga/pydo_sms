@@ -16,10 +16,16 @@ class AddressController extends Controller
             $municipalAccess = json_decode(Auth::user()->municipal_access);
 
             if ($municipalAccess[0] == "*") {
-                return address::where('address', 'LIKE', "{$request->searched}%")->take(10)->get();
+                return address::where('address', 'LIKE', "{$request->searched}%")
+                        ->orWhere('municipality', 'LIKE', "{$request->searched}%")
+                        ->take(10)
+                        ->get();
             }
             
-            return address::whereIn('municipality', $municipalAccess)->where('address', 'LIKE', "{$request->searched}%")->get();
+                return address::whereIn('municipality', $municipalAccess)
+                        ->where('address', 'LIKE', "{$request->searched}%")
+                        ->orWhere('municipality', 'LIKE', "{$request->searched}%")
+                        ->get();
 
 
         } catch (Exception $e) {

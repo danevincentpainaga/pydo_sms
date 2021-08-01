@@ -20,14 +20,14 @@ class ImportScholarsController extends Controller
 
 		try {
 
-		    // $request->validate([
-		    //     'scholars' => 'required',
-		    //     'error' => 'required',
-		    // ]);
+		    $request->validate([
+		        'scholars' => 'required',
+		        'error' => 'required',
+		    ]);
 
-		    // if ($request->error > 0) {
-		    // 	return response()->json(['message'=> 'Imported data has '. $request->error ." errors"], 422);	
-		    // }
+		    if ($request->error > 0) {
+		    	return response()->json(['message'=> 'Imported data has '. $request->error ." errors"], 422);	
+		    }
 
 			$imported_scholars = [];
 

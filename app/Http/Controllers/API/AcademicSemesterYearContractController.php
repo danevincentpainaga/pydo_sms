@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\ValidateAcademiSemesterYearContractRequest;
 use App\Models\academicyear_semester_contract;
+use DB;
 
 class AcademicSemesterYearContractController extends Controller
 {
@@ -18,10 +19,18 @@ class AcademicSemesterYearContractController extends Controller
     {
         try {
             
+            DB::beginTransaction();
+
             $asc = academicyear_semester_contract::whereIn('state', ['Available', 'Selected'])->count();
 
             if ($asc > 0) {
                return response()->json(['message'=> 'Failed! Cannot create more than one contract.'], 403);
+            }
+
+            $res = academicyear_semester_contract::where(['academic_year'=> $request->academic_year, 'semester'=> $request->academic_year])->count();
+
+            if($res > 0){
+                return response()->json(['message'=> 'Failed! Academic year / semester already exist'], 403);
             }
 
             academicyear_semester_contract::create(
@@ -34,9 +43,12 @@ class AcademicSemesterYearContractController extends Controller
                 ]
             );
 
+            DB::commit();
+
             return response()->json(['message'=> 'Update successful!'], 200);
             
         } catch (Exception $e) {
+            DB::roolback();
             throw $e;
         }
     }

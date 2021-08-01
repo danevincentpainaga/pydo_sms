@@ -67,17 +67,26 @@ class AcademicContractController extends Controller
 
             $contract = activated_contract::first();
 
-            if ($contract) {
+            DB::beginTransaction();
+
+            if (!$contract) {
+                $c = new activated_contract;
+                $c->ascId = $request->ascId;
+                $c->contract_state = "Open";
+                $c->save();
+                $this->updateStatus();
+                return response()->json(['message' => 'Contract succesfully set.'], 200);
+            }
+
+            if ($contract->contract_state == 'Open') {
                 return response()->json(['message' => 'Failed!. Contract already opened.'] , 500);
             }
 
-            DB::beginTransaction();
-
-            $c = new activated_contract;
-            $c->ascId = $request->ascId;
-            $c->contract_state = "Open";
-            $c->save();
-
+            $contract->ascId = $request->ascId;
+            $contract->contract_state = "Open";
+            $contract->save();
+            
+            $this->updateStatus();
             academicyear_semester_contract::findOrFail($request->ascId)->update(['state'=> 'Selected']);
 
             DB::commit();
@@ -90,6 +99,11 @@ class AcademicContractController extends Controller
             throw $e;
         }
         
+    }
+
+    public function updateStatus(){
+        scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active']);
+        scholar::where('contract_status', 'Approved')->update(['contract_status'=> 'Pending']);
     }
 
     public function closeContract()
@@ -107,7 +121,7 @@ class AcademicContractController extends Controller
 
                 academicyear_semester_contract::findOrFail($contract->ascId)->update(['state'=> 'Closed']);
                 scholar::where('contract_status', 'Pre-Approved')->update(['contract_status'=> 'Approved']);
-                scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active']);
+                // scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active']);
 
                 DB::commit();
 

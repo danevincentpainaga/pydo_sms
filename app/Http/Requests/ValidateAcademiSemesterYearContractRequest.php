@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Rules\validateAcademicSemester;
 
 class ValidateAcademiSemesterYearContractRequest extends FormRequest
 {

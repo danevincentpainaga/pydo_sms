@@ -112,7 +112,7 @@ class ScholarController extends validateUserCredentials
 
 	public function getScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, 'lastname', 'ASC', 50);
+		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, 'lastname', 'ASC', 25);
 	}
 
 	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $columnToBeOrdered, $orderby, $limit, $accessedDegree = [])
