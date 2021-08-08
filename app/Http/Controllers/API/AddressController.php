@@ -23,8 +23,8 @@ class AddressController extends Controller
             }
             
                 return address::whereIn('municipality', $municipalAccess)
-                        ->where('address', 'LIKE', "{$request->searched}%")
-                        ->orWhere('municipality', 'LIKE', "{$request->searched}%")
+                        ->where(DB::raw('CONCAT(address," ",municipality)'), 'LIKE', "%{$request->searched}%")
+                        ->take(10)
                         ->get();
 
 

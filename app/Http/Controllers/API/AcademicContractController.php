@@ -121,7 +121,6 @@ class AcademicContractController extends Controller
 
                 academicyear_semester_contract::findOrFail($contract->ascId)->update(['state'=> 'Closed']);
                 scholar::where('contract_status', 'Pre-Approved')->update(['contract_status'=> 'Approved']);
-                // scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active']);
 
                 DB::commit();
 
