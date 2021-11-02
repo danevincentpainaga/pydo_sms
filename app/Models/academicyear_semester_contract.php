@@ -19,4 +19,8 @@ class academicyear_semester_contract extends Model
     	return $this->hasOne(scholar::class, 'scholar_asc_id', 'asc_id');
     }
 
+    public function governor(){
+    	return $this->HasOne(governor::class, 'governor_id', 'governorId');
+    }
+
 }

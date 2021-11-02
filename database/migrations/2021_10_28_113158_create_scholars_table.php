@@ -37,6 +37,7 @@ class CreateScholarsTable extends Migration
             $table->string('degree', 20);
             $table->string('scholar_status', 3);
             $table->string('contract_status', 25);
+            $table->string('civil_status', 15);
             $table->bigInteger('contract_id')->unsigned();
             $table->foreign('contract_id')->references('activated_contract_id')->on('activated_contract');
             $table->bigInteger('last_renewed')->unsigned();

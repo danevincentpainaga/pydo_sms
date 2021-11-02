@@ -12,6 +12,7 @@ use App\Models\activated_contract;
 use App\Models\academicyear_semester_contract;
 use App\Models\scholar;
 use App\Models\User;
+use App\Models\governor;
 use DB;
 
 class AcademicContractController extends Controller
@@ -37,13 +38,16 @@ class AcademicContractController extends Controller
     {
         try {
 
-            $activated_contract_details = activated_contract::with('academicYearSemester:asc_id,semester,academic_year')
+            $activated_contract_details = activated_contract::with('academicYearSemester:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount')
                     ->select('activated_contract_id', 'ascId', 'created_at', 'updated_at', 'contract_state')
                     ->first();
-            if ($activated_contract_details) {
-                return [$activated_contract_details];
-            }
-            return response()->json(['message' => 'Contract not set.'], 500);
+
+            if (!$activated_contract_details) return response()->json(['message' => 'Contract not set.'], 400);
+
+            $governor = governor::where('selected', 'true')->first();
+            $activated_contract_details['governor'] = $governor->governor;
+            
+            return [$activated_contract_details];
 
         } catch (Exception $e) {
             throw $e;
@@ -62,24 +66,29 @@ class AcademicContractController extends Controller
             $state = academicyear_semester_contract::findOrFail($request->ascId);
 
             if ($state->state != 'Available') {
-               return response()->json(['message' => 'Failed! Cannot set contract.'], 500);
+               return response()->json(['message' => 'Failed! Cannot set contract.'], 400);
             }
+
+            $governor = governor::where('selected', 'true')->first();
+
+            if(!$governor) return response()->json(['message' => 'Please add Governor details'], 400);
 
             $contract = activated_contract::first();
 
             DB::beginTransaction();
 
             if (!$contract) {
-                $c = new activated_contract;
+                $c = new activated_contract();
                 $c->ascId = $request->ascId;
                 $c->contract_state = "Open";
                 $c->save();
                 $this->updateStatus();
-                return response()->json(['message' => 'Contract succesfully set.'], 200);
+                DB::commit();
+                return response()->json(['message' => 'Contract succesfully setted.'], 200);
             }
 
             if ($contract->contract_state == 'Open') {
-                return response()->json(['message' => 'Failed!. Contract already opened.'] , 500);
+                return response()->json(['message' => 'Failed!. Contract already opened.'] , 400);
             }
 
             $contract->ascId = $request->ascId;
@@ -128,7 +137,7 @@ class AcademicContractController extends Controller
 
             }
 
-            return response()->json(['message' => 'Failed. Contract already closed'] , 500);
+            return response()->json(['message' => 'Failed. Contract already closed'] , 400);
 
         } catch (Exception $e) {
             DB::roolback();
@@ -156,7 +165,7 @@ class AcademicContractController extends Controller
 
             }
 
-            return response()->json(['message' => 'Contract already opened'] , 500); 
+            return response()->json(['message' => 'Contract already opened'] , 400); 
 
         } catch (Exception $e) {
             DB::roolback();

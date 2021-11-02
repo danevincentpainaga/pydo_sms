@@ -15,7 +15,8 @@ class ExportScholarsController extends validateUserCredentials
 	public function getScholarsToExport(Request $request)
 	{
 		$result = [];
-		$accessed_degree = json_decode(Auth::user()->degree_access);
+		// $accessed_degree = json_decode(Auth::user()->degree_access);
+
 		$municipalities_access = $this->filteredMunicipality($request->municipality);
 		
 		DB::disableQueryLog();
@@ -24,7 +25,7 @@ class ExportScholarsController extends validateUserCredentials
 					if ($municipalities_access[0] != "*") {
 						$query->whereIn('addresses.municipality', $municipalities_access );
 					}
-					$query->whereIn('degree', $accessed_degree);
+					$query->whereIn('degree', $this->getDegree());
 					$query->whereIn('contract_status', ['Approved', 'Pre-Approved', 'Pending']);
 					// $query->where('address', 'LIKE',"%{$request->address}%");
 					// $query->where('semester', 'LIKE', "{$request->semester}%");
@@ -32,7 +33,7 @@ class ExportScholarsController extends validateUserCredentials
 					$query->join('addresses', 'addresses.address_id', '=', 'scholars.addressId');
 					$query->join('schools', 'schools.school_id', '=', 'scholars.schoolId');
 					$query->join('courses', 'courses.course_id', '=', 'scholars.courseId');
-					$query->join('academicyear_semester_contracts', 'academicyear_semester_contracts.asc_id', '=', 'scholars.contract_id');
+					$query->join('academicyear_semester_contracts', 'academicyear_semester_contracts.asc_id', '=', 'scholars.last_renewed');
 					// $query->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$request->searched_name}%");
 					// $query->where('age', 'LIKE', $request->age);
 					// $query->where('gender', 'LIKE', $request->gender);
@@ -54,6 +55,16 @@ class ExportScholarsController extends validateUserCredentials
 					});
 						
 		return $result;
+	}
+
+	protected function getDegree(){
+
+		$degree_access = json_decode(Auth::user()->degree_access);
+
+		if($degree_access[0] == "*") return ["Undergraduate", "Master", "Doctorate"];
+
+		return $degree_access;
+		
 	}
 
 }

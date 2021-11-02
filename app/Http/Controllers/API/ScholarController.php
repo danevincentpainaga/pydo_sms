@@ -25,7 +25,7 @@ class ScholarController extends validateUserCredentials
 
 				$data = $this->saveDetails($request);
 				
-				return response()->json(['message'=> $data], 200);	
+				return response()->json(['data'=> $data], 200);	
 
 			}
 
@@ -55,6 +55,7 @@ class ScholarController extends validateUserCredentials
 	        $scholar->courseId = $request->courseId;
 	        $scholar->section = $request->section;
 	        $scholar->year_level  = $request->year_level;
+	        $civil_status = $request->civil_status;
 	        $scholar->IP = $request->IP;
 	        $scholar->save();
 
@@ -78,6 +79,7 @@ class ScholarController extends validateUserCredentials
 		        'date_of_birth' => $request->date_of_birth,
 		        'age' => $request->age,
 		        'gender' => $request->gender,
+		        'civil_status' => $request->civil_status,
 		        'schoolId' => $request->schoolId,
 		        'courseId' => $request->courseId,
 		        'section' => $request->section,
@@ -134,13 +136,12 @@ class ScholarController extends validateUserCredentials
 				})
 				->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount'])		
 				->whereIn('degree', $accessed_degree)
-				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
+				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "%{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)
 				->where('contract_status', 'LIKE',  $contract_status)
 				->where('degree', 'LIKE', $request->degree)
 				->orderBy($columnToBeOrdered, $orderby)
 				->paginate($limit);
-
 			}
 			
 			return response()->json(['message'=> 'UnAuthorized. No municipality access!'], 403);	

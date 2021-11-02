@@ -15,4 +15,29 @@ class UserAccountsController extends Controller
     	return User::where('name', 'LIKE', "{$request->searched}%")->get();
     }
 
+    public function createUsersAccount(Request $request){
+
+        $attr = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users',
+            'password' => 'required|string|min:3',
+            'municipal_access' => 'required',
+            'degree_access' => 'required',
+            'user_type' => 'required',
+            'status' => 'required',
+        ]);
+
+        $user = User::create([
+            'name' => $attr['name'],
+            'email' => $attr['email'],
+            'password' => bcrypt($attr['password']),
+            'municipal_access' => json_encode($attr['municipal_access']),
+            'degree_access' => json_encode($attr['degree_access']),
+            'user_type' => $attr['user_type'],
+            'status' => $attr['status']
+        ]);
+
+        return response()->json(['success'=> 'User created'], 200);
+    }
+
 }

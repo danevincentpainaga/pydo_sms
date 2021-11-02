@@ -15,7 +15,7 @@ use App\Http\Controllers\API\ExportScholarsController;
 use App\Http\Controllers\API\ImportScholarsController;
 use App\Http\Controllers\API\dashboardController;
 use App\Http\Controllers\API\CourseController;
-
+use App\Http\Controllers\API\GovernorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +29,7 @@ use App\Http\Controllers\API\CourseController;
 */
 
 Route::post('login', [AuthController::class, 'login']);
+Route::post('createUserAccounts', [UserAccountsController::class, 'createUserAccounts']);
 
 Route::get('login',function(){
 	return abort(404);
@@ -120,8 +121,20 @@ Route::middleware('auth:sanctum')->group(function () {
 		
 	});
 
+	Route::group(['prefix' => 'governor'], function () {
 
-	Route::post('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
+		Route::post('updateGovernor', [GovernorController::class, 'updateGovernor'])->middleware('admin');
+		Route::get('getGovernorDetails', [GovernorController::class, 'getGovernorDetails'])->middleware('admin');
+
+	});
+
+	Route::group(['prefix' => 'users'], function () {
+
+		Route::get('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
+		Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAccount'])->middleware('admin');
+
+	});
+
 
 	Route::get('export/getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
 

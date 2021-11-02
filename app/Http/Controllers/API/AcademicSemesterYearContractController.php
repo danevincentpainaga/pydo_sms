@@ -27,7 +27,7 @@ class AcademicSemesterYearContractController extends Controller
                return response()->json(['message'=> 'Failed! Cannot create more than one contract.'], 403);
             }
 
-            $res = academicyear_semester_contract::where(['academic_year'=> $request->academic_year, 'semester'=> $request->academic_year])->count();
+            $res = academicyear_semester_contract::where(['academic_year'=> $request->academic_year, 'semester'=> $request->semester])->count();
 
             if($res > 0){
                 return response()->json(['message'=> 'Failed! Academic year / semester already exist'], 403);

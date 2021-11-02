@@ -8,10 +8,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use DB;
 
 class AuthController extends Controller
 {
-    public function login(Request $request){
+    public function login(Request $request)
+    {
+		try {
+		    DB::connection()->getPdo();
+		} catch (\Exception $e) {
+		    return response()->json(['error' => 'No database connection'], 500);
+		}
+    
 	    $request->validate([
 	        'email' => 'required|email',
 	        'password' => 'required',
@@ -25,7 +33,7 @@ class AuthController extends Controller
 
 	    $success = $user->createToken('pydo_appKey')->plainTextToken;
 
-		return response()->json(['success'=>$success], 200);
+		return response()->json(['token'=>$success], 200);
     }
 
     public function getAuthenticatedUser(){
