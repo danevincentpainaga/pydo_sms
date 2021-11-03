@@ -85,8 +85,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'academic'], function () {
 
 		Route::get('getAcademicYearList', [AcademicSemesterYearContractController::class, 'getAcademicYearList']);
-		Route::post('storeAcademicYearList', [AcademicSemesterYearContractController::class, 'storeAcademicYearList'])->middleware('admin');
-		Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin');
+		Route::post('storeAcademicYearList', [AcademicSemesterYearContractController::class, 'storeAcademicYearList'])->middleware('admin_access');
+		Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin_access');
 		
 	});
 
@@ -94,10 +94,10 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'contract'], function () {
 
 		Route::get('getAcademicContractDetails', [AcademicContractController::class, 'getAcademicContractDetails']);
-		Route::post('setContract', [AcademicContractController::class, 'setContract'])->middleware('admin');
-		Route::post('closeContract', [AcademicContractController::class, 'closeContract'])->middleware('admin');
-		Route::post('openContract', [AcademicContractController::class, 'openContract'])->middleware('admin');
-		Route::post('confirmPassword', [AcademicContractController::class, 'confirmPassword'])->middleware('admin');
+		Route::post('setContract', [AcademicContractController::class, 'setContract'])->middleware('admin_access');
+		Route::post('closeContract', [AcademicContractController::class, 'closeContract'])->middleware('admin_access');
+		Route::post('openContract', [AcademicContractController::class, 'openContract'])->middleware('admin_access');
+		Route::post('confirmPassword', [AcademicContractController::class, 'confirmPassword'])->middleware('admin_access');
 			
 	});
 
@@ -121,17 +121,17 @@ Route::middleware('auth:sanctum')->group(function () {
 		
 	});
 
-	Route::group(['prefix' => 'governor'], function () {
+	Route::group(['prefix' => 'governor', 'middleware' => 'superadmin'], function () {
 
-		Route::post('updateGovernor', [GovernorController::class, 'updateGovernor'])->middleware('admin');
-		Route::get('getGovernorDetails', [GovernorController::class, 'getGovernorDetails'])->middleware('admin');
+		Route::post('updateGovernor', [GovernorController::class, 'updateGovernor']);
+		Route::get('getGovernorDetails', [GovernorController::class, 'getGovernorDetails']);
 
 	});
 
-	Route::group(['prefix' => 'users'], function () {
+	Route::group(['prefix' => 'users', 'middleware' => 'admin_access'], function () {
 
-		Route::get('getUserAccounts', [UserAccountsController::class, 'getUserAccounts'])->middleware('admin');
-		Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAccount'])->middleware('admin');
+		Route::get('getUserAccounts', [UserAccountsController::class, 'getUserAccounts']);
+		Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAccount']);
 
 	});
 

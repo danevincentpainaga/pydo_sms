@@ -37,6 +37,12 @@ class AuthController extends Controller
     }
 
     public function getAuthenticatedUser(){
+		try {
+		    DB::connection()->getPdo();
+		} catch (\Exception $e) {
+		    return response()->json(['error' => 'Connection lost'], 500);
+		}
+    
     	return Auth::user();
     }
 
