@@ -11,7 +11,15 @@ class GovernorController extends Controller
 {
     function updateGOvernor(Request $request)
     {
-    	$gov = $request->all();
+
+        $request->validate([
+            'firstname' => 'required',
+            'initial' => 'required',
+            'lastname' => 'required'
+        ]);    	
+
+        $gov = $request->all();
+        
     	foreach ($gov as $key => $value) {
     		if(!$value){
     			$gov[$key] = "";
