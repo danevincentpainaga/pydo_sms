@@ -19,6 +19,7 @@ class CreateScholarsTable extends Migration
             $table->string('lastname');
             $table->string('firstname');
             $table->string('middlename')->nullable();
+            $table->string('suffix')->nullable();
             $table->bigInteger('addressId')->unsigned()->index();
             $table->foreign('addressId')->references('address_id')->on('addresses');
             $table->string('date_of_birth', 10);

@@ -29,7 +29,7 @@ use App\Http\Controllers\API\GovernorController;
 */
 
 Route::post('login', [AuthController::class, 'login']);
-Route::post('createUserAccounts', [UserAccountsController::class, 'createUserAccounts']);
+// Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAccount']);
 
 Route::get('login',function(){
 	return abort(404);

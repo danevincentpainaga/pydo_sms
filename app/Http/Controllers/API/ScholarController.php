@@ -47,6 +47,7 @@ class ScholarController extends validateUserCredentials
 	        $scholar->lastname = $this->trimAndAcceptLettersSpacesOnly($request->lastname);
 	        $scholar->firstname = $this->trimAndAcceptLettersSpacesOnly($request->firstname);
 	        $scholar->middlename = $this->trimAndAcceptLettersSpacesOnly($request->middlename);
+	        $scholar->suffix = $request->suffix;
 	        $scholar->addressId = $request->addressId;
 	        $scholar->date_of_birth = $request->date_of_birth;
 	        $scholar->age = $request->age;
@@ -70,11 +71,13 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
+
 			return scholar::create([
 		        'student_id_number' => $request->student_id_number,
 		        'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
 		        'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
 		        'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
+		        'suffix' => $request->suffix,
 		        'addressId' => $request->addressId,
 		        'date_of_birth' => $request->date_of_birth,
 		        'age' => $request->age,
@@ -85,8 +88,8 @@ class ScholarController extends validateUserCredentials
 		        'section' => $request->section,
 		        'year_level' => $request->year_level,
 		        'IP' => $request->IP,
-		        'father_details' => $request->father_details,
-		        'mother_details' => $request->mother_details,
+		        'father_details' => $this->makeNullEmptyString($request->father_details),
+		        'mother_details' => $this->makeNullEmptyString($request->mother_details),
 		        'degree' => $request->degree,
 		        'scholar_status' => 'NEW',
 		        'contract_status' => 'Pre-Approved',
@@ -102,6 +105,15 @@ class ScholarController extends validateUserCredentials
 		}	
 	}
 
+	private function makeNullEmptyString($arr){
+    	foreach ($arr as $key => $value) {
+    		if(!$value){
+    			$arr[$key] = "";
+    		}
+    	}
+    	return $arr;
+	}
+
 	public function getNewUndergraduateScholars(Request $request)
 	{
 		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 10, ["Undergraduate"]);
@@ -114,7 +126,7 @@ class ScholarController extends validateUserCredentials
 
 	public function getScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, 'lastname', 'ASC', 25);
+		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, 'lastname', 'ASC', 3);
 	}
 
 	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $columnToBeOrdered, $orderby, $limit, $accessedDegree = [])
@@ -136,7 +148,7 @@ class ScholarController extends validateUserCredentials
 				})
 				->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount'])		
 				->whereIn('degree', $accessed_degree)
-				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "%{$searched_name}%")
+				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
 				->where('scholar_status', 'LIKE',  $scholar_status)
 				->where('contract_status', 'LIKE',  $contract_status)
 				->where('degree', 'LIKE', $request->degree)

@@ -32,11 +32,11 @@ class GovernorController extends Controller
 			$governor = governor::where('selected', 'true')->first();
 			
 			if($governor){
-				$governor->governor = $gov;
+				$governor->governor = json_encode($gov);
 				$governor->save();
 			}
 			else{
-				governor::create(['selected' => 'true', 'governor'=> $request->governor ]);
+				governor::create(['selected' => 'true', 'governor'=> json_encode($gov) ]);
 			}
 			
 			DB::commit();

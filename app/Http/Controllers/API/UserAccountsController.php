@@ -35,10 +35,10 @@ class UserAccountsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:3',
-            'municipal_access' => 'required',
-            'degree_access' => 'required',
-            'user_type' => 'required',
-            'status' => 'required',
+            'municipal_access' => 'required|array|min:1',
+            'degree_access' => 'required|array|min:1',
+            'user_type' => 'required|string',
+            'status' => 'required|string',
         ]);
 
         $user = User::create([
