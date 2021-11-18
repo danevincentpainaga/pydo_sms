@@ -25,13 +25,17 @@ class validateUserCredentials Extends Controller
 	protected function filterScholarDegree($accessedDegree){
 
 		$degree_access = json_decode(Auth::user()->degree_access);
-
-		if($degree_access[0] == "*") return ["Undergraduate", "Master", "Doctorate"];
-
-		if($accessedDegree) return array_values(array_intersect($degree_access, $accessedDegree));
-
-		return $degree_access;
 		
+		if ($accessedDegree) {
+			if($degree_access[0] == "*") return $accessedDegree;
+
+			return array_values(array_intersect($degree_access, $accessedDegree));
+		}
+			
+		if($degree_access[0] == "*") return ["Undergraduate", "Master", "Doctorate"];
+		
+		return $degree_access;
+
 	}
 
 }

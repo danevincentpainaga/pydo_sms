@@ -116,7 +116,7 @@ class ScholarController extends validateUserCredentials
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 10, ["Undergraduate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 2, ["Undergraduate"]);
 	}
 
 	public function getNewMastersDoctorateScholars(Request $request)
