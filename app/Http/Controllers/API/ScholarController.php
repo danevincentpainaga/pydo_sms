@@ -39,6 +39,7 @@ class ScholarController extends validateUserCredentials
 
 	public function updateScholarDetails(validateUpdateScholarsRequest $request)
 	{
+
 		try {
 
 	        $scholar = scholar::findOrFail($request->scholar_id);
@@ -56,7 +57,7 @@ class ScholarController extends validateUserCredentials
 	        $scholar->courseId = $request->courseId;
 	        $scholar->section = $request->section;
 	        $scholar->year_level  = $request->year_level;
-	        $civil_status = $request->civil_status;
+	        $scholar->civil_status = $request->civil_status;
 	        $scholar->IP = $request->IP;
 	        $scholar->save();
 

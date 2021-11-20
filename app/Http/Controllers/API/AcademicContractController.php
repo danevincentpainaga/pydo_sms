@@ -82,7 +82,7 @@ class AcademicContractController extends Controller
                 $c->ascId = $request->ascId;
                 $c->contract_state = "Open";
                 $c->save();
-                $this->updateStatus();
+                $this->updateStatus($request->ascId);
                 DB::commit();
                 return response()->json(['message' => 'Contract succesfully setted.'], 200);
             }
@@ -95,8 +95,7 @@ class AcademicContractController extends Controller
             $contract->contract_state = "Open";
             $contract->save();
             
-            $this->updateStatus();
-            academicyear_semester_contract::findOrFail($request->ascId)->update(['state'=> 'Selected']);
+            $this->updateStatus($request->ascId);
 
             DB::commit();
 
@@ -110,7 +109,8 @@ class AcademicContractController extends Controller
         
     }
 
-    public function updateStatus(){
+    public function updateStatus($ascId){
+        academicyear_semester_contract::findOrFail($ascId)->update(['state'=> 'Selected']);
         scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active']);
         scholar::where('contract_status', 'Approved')->update(['contract_status'=> 'Pending']);
     }
