@@ -7,6 +7,7 @@ use App\Http\Requests\validateScholarsRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use File;
 use App\Models\scholar;
 use App\Models\academicyear_semester_contract;
@@ -165,6 +166,7 @@ class ScholarController extends validateUserCredentials
 	
     public function uploadProfilePic(Request $request){
 
+
         if ($request->hasFile('file')) {
 
         	$file = $request->file('file');
@@ -195,7 +197,7 @@ class ScholarController extends validateUserCredentials
 	        return $scholar->photo;
         }
 
-        return "No file";
+        return response()->json(["message" => "No FIle"], 500);
 
     }
 
