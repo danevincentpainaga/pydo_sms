@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'scholars'], function () {
 
 		Route::get('getScholars', [ScholarController::class, 'getScholars']);
+		Route::get('getNotRenewedScholar', [ScholarController::class, 'getNotRenewedScholar']);
 		Route::post('storeNewScholarDetails', [ScholarController::class, 'storeNewScholarDetails']);
 		Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
 		Route::post('uploadProfilePic', [ScholarController::class, 'uploadProfilePic']);

@@ -118,18 +118,23 @@ class ScholarController extends validateUserCredentials
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 2, ["Undergraduate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", ["Pre-Approved"], 'scholar_id', 'DESC', 2, ["Undergraduate"]);
 	}
 
 	public function getNewMastersDoctorateScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched, "NEW", "Pre-Approved", 'scholar_id', 'DESC', 10, ["Masters", "Doctorate"]);
+		return $this->returnedScholars($request, $request->searched, "NEW", ["Pre-Approved"], 'scholar_id', 'DESC', 10, ["Masters", "Doctorate"]);
 	}
 
 	public function getScholars(Request $request)
 	{
-		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $request->contract_status, 'lastname', 'ASC', 3);
+		$contract_status = $request->contract_status ? [$request->contract_status] : "";
+		return $this->returnedScholars($request, $request->searched_name, $request->scholar_status, $contract_status, 'lastname', 'ASC', 3);
 	}
+
+    public function getNotRenewedScholar(Request $request){
+    	return $this->returnedScholars($request, $request->searched_name, "NEW", ["Pre-Approved"], 'lastname', 'ASC', 1, [$request->degree]);
+    }
 
 	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $columnToBeOrdered, $orderby, $limit, $accessedDegree = [])
 	{
@@ -141,21 +146,25 @@ class ScholarController extends validateUserCredentials
 
 			if ($municipalities_access) {
 
-				return scholar::whereHas('address', function($query) use ($municipalities_access){
+				$query = scholar::query();
+
+				$query->whereHas('address', function($query) use ($municipalities_access){
 
 					if ($municipalities_access[0] != "*") {
 						$query->whereIn('municipality', $municipalities_access );
 					}
 
-				})
-				->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount'])		
-				->whereIn('degree', $accessed_degree)
-				->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%")
-				->where('scholar_status', 'LIKE',  $scholar_status)
-				->where('contract_status', 'LIKE',  $contract_status)
-				->where('degree', 'LIKE', $request->degree)
-				->orderBy($columnToBeOrdered, $orderby)
-				->paginate($limit);
+				});
+				$query->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount']);
+				$query->whereIn('degree', $accessed_degree);
+				$query->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$searched_name}%");
+				$query->where('scholar_status', 'LIKE',  $scholar_status);
+				if($contract_status){
+					$query->whereIn('contract_status', $contract_status);
+				}
+				$query->where('degree', 'LIKE', $request->degree);
+				$query->orderBy($columnToBeOrdered, $orderby);
+				return $query->paginate($limit);
 			}
 			
 			return response()->json(['message'=> 'UnAuthorized. No municipality access!'], 403);	
@@ -212,6 +221,10 @@ class ScholarController extends validateUserCredentials
         $filename .= "_" . md5(time()) . "." . $extension;
 
         return $filename;
+    }
+
+    public function renewScholar(Request $request){
+
     }
 
 }
