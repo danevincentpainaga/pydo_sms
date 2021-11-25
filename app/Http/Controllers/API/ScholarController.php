@@ -30,7 +30,7 @@ class ScholarController extends validateUserCredentials
 
 			}
 
-			return response()->json(['message'=> 'Scholar already exist'], 403);
+			return response()->json(['message'=> 'Scholar already exist'], 422);
 
 		} catch (Exception $e) {
 			throw $e;
@@ -133,7 +133,7 @@ class ScholarController extends validateUserCredentials
 	}
 
     public function getNotRenewedScholar(Request $request){
-    	return $this->returnedScholars($request, $request->searched_name, "NEW", ["Pre-Approved"], 'lastname', 'ASC', 1, [$request->degree]);
+    	return $this->returnedScholars($request, $request->searched_name, "OLD" , ["Pending"], 'lastname', 'ASC', 1, [$request->degree]);
     }
 
 	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $columnToBeOrdered, $orderby, $limit, $accessedDegree = [])
@@ -224,6 +224,19 @@ class ScholarController extends validateUserCredentials
     }
 
     public function renewScholar(Request $request){
+
+		$scholar = scholar::findOrFail($request->scholar_id);
+		
+		if($scholar->contract_status == 'Pre-Approved' || $scholar->contract_status == 'Approved'){
+			return response()->json(['message'=> 'Scholar is already renewed'], 422);
+		}
+
+		$scholar->contract_status = 'Pre-Approved';
+        $scholar->contract_id = $request->contract_id;
+        $scholar->last_renewed = $request->last_renewed;
+		$scholar->save();
+
+		return response()->json(['message'=> 'Scholar renewed'], 200);
 
     }
 
