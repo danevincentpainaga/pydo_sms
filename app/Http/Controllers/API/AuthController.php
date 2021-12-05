@@ -70,7 +70,7 @@ class AuthController extends Controller
 		    $user = User::where(['email' => $request->email, 'user_type' => 'Supervisor'])->first();
 
 		    if (! $user || ! Hash::check($request->password, $user->password)) {
-		        return response()->json(['error' => 'Incorrect email or password'], 401);
+		        return response()->json(['message' => 'Incorrect email or password'], 401);
 		    }
 
 			return response()->json(['message'=> 'Success'], 200);

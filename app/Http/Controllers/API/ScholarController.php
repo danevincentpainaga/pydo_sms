@@ -12,18 +12,24 @@ use File;
 use App\Models\scholar;
 use App\Models\academicyear_semester_contract;
 use DB;
+use App\Http\Controllers\API\ScholarValidations;
 
 class ScholarController extends validateUserCredentials
 {
+	private $sv;
+
+	public function __construct(){
+		$this->sv = new ScholarValidations();
+	}
 
 	public function storeNewScholarDetails(validateScholarsRequest $request)
 	{
 		try {
 
 			$scholarExist = scholar::where([
-					'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
-					'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
-					'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
+					'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+					'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
 					'suffix' => $request->suffix
 			])->count();
 
@@ -46,17 +52,7 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-			$scholarExist = scholar::where([
-					'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
-					'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
-					'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
-					'suffix' => $request->suffix
-			])
-			->whereJsonContains('mother_details->maiden_name', $request->mother_details['maiden_name'])
-			->whereJsonContains('mother_details->middlename', $request->mother_details['middlename'])
-			->whereJsonContains('mother_details->firstname', $request->mother_details['firstname'])
-			->orWhere('student_id_number', $request->student_id_number)
-			->count();
+			$scholarExist = $this->findScholarIfExist($request);
 
 			if(!$scholarExist){
 
@@ -73,31 +69,87 @@ class ScholarController extends validateUserCredentials
 		}
 	}
 
+	public function findScholarIfExist($scholar, $request){
+			return scholar::where([
+					'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+					'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
+					'suffix' => $request->suffix
+			])
+			->whereJsonContains('mother_details->maiden_name', $scholar->mother_details['maiden_name'])
+			->whereJsonContains('mother_details->middlename', $scholar->mother_details['middlename'])
+			->whereJsonContains('mother_details->firstname', $scholar->mother_details['firstname'])
+			->orWhere(function ($query) use ($request) {
+				$query->where([
+					'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+					'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
+					'suffix' => $request->suffix,
+					'student_id_number' => $request->student_id_number
+				]);
+			})
+			->count();
+	}
+
 	public function updateScholarDetails(validateUpdateScholarsRequest $request)
 	{
 
 		try {
+			$validate = false;
+			$scholarExist = "";
 
-	        $scholar = scholar::findOrFail($request->scholar_id);
-	        $scholar->student_id_number = $request->student_id_number;
-	        $scholar->degree = $request->degree;
-	        $scholar->lastname = $this->trimAndAcceptLettersSpacesOnly($request->lastname);
-	        $scholar->firstname = $this->trimAndAcceptLettersSpacesOnly($request->firstname);
-	        $scholar->middlename = $this->trimAndAcceptLettersSpacesOnly($request->middlename);
-	        $scholar->suffix = $request->suffix;
-	        $scholar->addressId = $request->addressId;
-	        $scholar->date_of_birth = $request->date_of_birth;
-	        $scholar->age = $request->age;
-	        $scholar->gender = $request->gender;
-	        $scholar->schoolId  = $request->schoolId;
-	        $scholar->courseId = $request->courseId;
-	        $scholar->section = $request->section;
-	        $scholar->year_level  = $request->year_level;
-	        $scholar->civil_status = $request->civil_status;
-	        $scholar->IP = $request->IP;
-	        $scholar->save();
+			DB::beginTransaction();
 
-			return $scholar->updated_at;
+			$scholar = scholar::findOrFail($request->scholar_id);
+
+			if($scholar->firstname.$scholar->middlename.$scholar->lastname != $request->firstname.$request->middlename.$request->lastname || $scholar->student_id_number != $request->student_id_number){
+				$validate = true;
+			}
+			// $rm = $request->mother_details;
+			// $sm = $scholar->mother_details;
+
+			// if($scholar->firstname.$scholar->middlename.$scholar->lastname != $request->firstname.$request->middlename.$request->lastname){
+			// 	$validate = true;
+			// }
+
+			// if($scholar->student_id_number != $request->student_id_number){
+			// 	$validate = true;
+			// }
+
+			// if($rm['firstname'].$rm['middlename'].$rm['maiden_name'] != $sm['firstname'].$sm['middlename'].$sm['maiden_name']){
+			// 	$validate = true;
+			// }
+
+
+			if($validate){
+				$scholarExist = $this->findScholarIfExist($scholar, $request);
+			}
+			
+			if(!$scholarExist){
+		        
+		        $scholar->student_id_number = $request->student_id_number;
+		        $scholar->degree = $request->degree;
+		        $scholar->lastname = $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname);
+		        $scholar->firstname = $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname);
+		        $scholar->middlename = $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename);
+		        $scholar->suffix = $request->suffix;
+		        $scholar->addressId = $request->addressId;
+		        $scholar->date_of_birth = $request->date_of_birth;
+		        $scholar->age = $request->age;
+		        $scholar->gender = $request->gender;
+		        $scholar->schoolId  = $request->schoolId;
+		        $scholar->courseId = $request->courseId;
+		        $scholar->section = $request->section;
+		        $scholar->year_level  = $request->year_level;
+		        $scholar->civil_status = $request->civil_status;
+		        $scholar->IP = $request->IP;
+		        $scholar->save();
+
+		        DB::commit();
+				return $scholar->updated_at;
+			}
+
+			return response()->json(['exist'=> true, 'message'=> 'Scholar already exist'], 422);
 
 		} catch (Exception $e) {
 			throw $e;
@@ -111,9 +163,9 @@ class ScholarController extends validateUserCredentials
 
 			return scholar::create([
 		        'student_id_number' => $request->student_id_number,
-		        'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
-		        'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
-		        'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
+		        'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+		        'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+		        'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
 		        'suffix' => $request->suffix,
 		        'addressId' => $request->addressId,
 		        'date_of_birth' => $request->date_of_birth,
@@ -125,8 +177,8 @@ class ScholarController extends validateUserCredentials
 		        'section' => $request->section,
 		        'year_level' => $request->year_level,
 		        'IP' => $request->IP,
-		        'father_details' => $this->makeNullEmptyString($request->father_details),
-		        'mother_details' => $this->makeNullEmptyString($request->mother_details),
+		        'father_details' => $this->sv->makeNullEmptyString($request->father_details),
+		        'mother_details' => $this->sv->makeNullEmptyString($request->mother_details),
 		        'degree' => $request->degree,
 		        'scholar_status' => 'NEW',
 		        'contract_status' => 'Pre-Approved',
@@ -142,14 +194,14 @@ class ScholarController extends validateUserCredentials
 		}	
 	}
 
-	private function makeNullEmptyString($arr){
-    	foreach ($arr as $key => $value) {
-    		if(!$value){
-    			$arr[$key] = "";
-    		}
-    	}
-    	return $arr;
-	}
+	// private function makeNullEmptyString($arr){
+ //    	foreach ($arr as $key => $value) {
+ //    		if(!$value){
+ //    			$arr[$key] = "";
+ //    		}
+ //    	}
+ //    	return $arr;
+	// }
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
@@ -245,9 +297,9 @@ class ScholarController extends validateUserCredentials
 
     }
 
-    private function trimAndAcceptLettersSpacesOnly($value){
-		return trim(preg_replace('/[^a-z\s]/i', '', $value));
-    }
+  //   private function trimAndAcceptLettersSpacesOnly($value){
+		// return trim(preg_replace('/[^a-z\s]/i', '', $value));
+  //   }
 
     private function createFilename(UploadedFile $file)
     {
