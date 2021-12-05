@@ -57,4 +57,26 @@ class AuthController extends Controller
 
 		return true;
     }
+
+    public function validateSupervisorCredentials(Request $request){
+
+    	try {
+
+		    $request->validate([
+		        'email' => 'required|email',
+		        'password' => 'required',
+		    ]);
+
+		    $user = User::where(['email' => $request->email, 'user_type' => 'Supervisor'])->first();
+
+		    if (! $user || ! Hash::check($request->password, $user->password)) {
+		        return response()->json(['error' => 'Incorrect email or password'], 401);
+		    }
+
+			return response()->json(['message'=> 'Success'], 200);
+
+    	} catch (Exception $e) {
+    		throw $e;
+    	}
+    }
 }

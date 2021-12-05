@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class SuperAdmin
+class Supervisor
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class SuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->user_type == "SuperAdmin") {
+        if (Auth::user()->user_type == "Supervisor") {
             return $next($request);
         }
         return response()->json( ['message'=> 'Not Authorized.'], 403 );

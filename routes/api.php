@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('getScholars', [ScholarController::class, 'getScholars']);
 		Route::get('getNotRenewedScholar', [ScholarController::class, 'getNotRenewedScholar']);
 		Route::post('storeNewScholarDetails', [ScholarController::class, 'storeNewScholarDetails']);
+		Route::post('storeNewScholarBySupervisorsApproval', [ScholarController::class, 'storeNewScholarBySupervisorsApproval']);
 		Route::post('renewScholar', [ScholarController::class, 'renewScholar']);
 		Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
 		Route::post('uploadProfilePic', [ScholarController::class, 'uploadProfilePic']);
@@ -123,7 +124,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		
 	});
 
-	Route::group(['prefix' => 'governor', 'middleware' => 'superadmin'], function () {
+	Route::group(['prefix' => 'governor', 'middleware' => 'supervisor'], function () {
 
 		Route::post('updateGovernor', [GovernorController::class, 'updateGovernor']);
 		Route::get('getGovernorDetails', [GovernorController::class, 'getGovernorDetails']);
@@ -145,6 +146,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	
 	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 	Route::post('confirmIsAdminAccess', [AuthController::class, 'isAdminAccess']);
+	Route::post('supervisorsApproval', [AuthController::class, 'validateSupervisorCredentials']);
 	Route::post('logout', [AuthController::class, 'logout']);
 	
 	

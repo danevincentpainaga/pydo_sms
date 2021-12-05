@@ -20,7 +20,12 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-			$scholarExist = scholar::where(['lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname), 'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname), 'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename)])->count();
+			$scholarExist = scholar::where([
+					'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
+					'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
+					'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
+					'suffix' => $request->suffix
+			])->count();
 
 			if(!$scholarExist){
 
@@ -30,13 +35,43 @@ class ScholarController extends validateUserCredentials
 
 			}
 
-			return response()->json(['message'=> 'Scholar already exist'], 422);
+			return response()->json(['exist'=> true, 'message'=> $scholarExist .' data matched'], 422);
 
 		} catch (Exception $e) {
 			throw $e;
 		}
 	}
 
+	public function storeNewScholarBySupervisorsApproval(validateScholarsRequest $request)
+	{
+		try {
+
+			$scholarExist = scholar::where([
+					'lastname' => $this->trimAndAcceptLettersSpacesOnly($request->lastname),
+					'firstname' => $this->trimAndAcceptLettersSpacesOnly($request->firstname),
+					'middlename' => $this->trimAndAcceptLettersSpacesOnly($request->middlename),
+					'suffix' => $request->suffix
+			])
+			->whereJsonContains('mother_details->maiden_name', $request->mother_details['maiden_name'])
+			->whereJsonContains('mother_details->middlename', $request->mother_details['middlename'])
+			->whereJsonContains('mother_details->firstname', $request->mother_details['firstname'])
+			->orWhere('student_id_number', $request->student_id_number)
+			->count();
+
+			if(!$scholarExist){
+
+				$data = $this->saveDetails($request);
+				
+				return response()->json(['data'=> $data], 200);
+
+			}
+
+			return response()->json(['exist'=> true, 'message'=> 'Scholar already exist'], 422);
+
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
 
 	public function updateScholarDetails(validateUpdateScholarsRequest $request)
 	{
