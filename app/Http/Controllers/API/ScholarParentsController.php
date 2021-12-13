@@ -36,16 +36,15 @@ class ScholarParentsController extends Controller
 	        ]);
 
 			$scholar = scholar::findOrFail($request->scholar_id);
-
-			if(!$this->checkIfScholarExist($scholar, $request)){
+			$scholarExist = $this->checkIfScholarExist($scholar, $request);
+			if(!$scholarExist){
 				$scholar->father_details = $this->sv->makeNullEmptyString($request->father_details);
 				$scholar->mother_details = $this->sv->makeNullEmptyString($request->mother_details);
 				$scholar->save();
-
 				return response()->json(['father_details'=> $scholar->father_details, 'mother_details'=> $scholar->mother_details, 'updated_at'=> $scholar->updated_at], 200);				
 			}
 
-			return response()->json(['exist'=> true, 'message'=> 'Scholar already exist'], 422);
+			return response()->json(['exist'=> true, 'message'=> 'Scholar already exist'], 403);
 
 		} catch (Exception $e) {
 			throw $e;
@@ -55,8 +54,8 @@ class ScholarParentsController extends Controller
 
 	private function checkIfScholarExist($scholar, $request){
 		
-		$rm = $request->mother_details;
-		$sm = $scholar->mother_details;
+		$rm = $this->sv->makeNullEmptyString($request->mother_details);
+		$sm = $this->sv->makeNullEmptyString($scholar->mother_details);
 
 		if($rm['firstname'].$rm['middlename'].$rm['maiden_name'] != $sm['firstname'].$sm['middlename'].$sm['maiden_name']){
 			return scholar::where([
@@ -65,23 +64,15 @@ class ScholarParentsController extends Controller
 					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($scholar->middlename),
 					'suffix' => $scholar->suffix
 			])
-			->whereJsonContains('mother_details->maiden_name', $request->mother_details['maiden_name'])
-			->whereJsonContains('mother_details->middlename', $request->mother_details['middlename'])
-			->whereJsonContains('mother_details->firstname', $request->mother_details['firstname'])
+			->where('scholar_id', '!=', $request->scholar_id)
+			->whereJsonContains('mother_details->maiden_name', $rm['maiden_name'])
+			->whereJsonContains('mother_details->middlename', $rm['middlename'])
+			->whereJsonContains('mother_details->firstname', $rm['firstname'])
 			->count();
 		}
 
 		return "";
 
 	}
-
-	// private function makeNullEmptyString($arr){
- //    	foreach ($arr as $key => $value) {
- //    		if(!$value){
- //    			$arr[$key] = "";
- //    		}
- //    	}
- //    	return $arr;
-	// }
 
 }

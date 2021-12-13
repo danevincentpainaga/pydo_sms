@@ -26,12 +26,7 @@ class ScholarController extends validateUserCredentials
 	{
 		try {
 
-			$scholarExist = scholar::where([
-					'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
-					'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
-					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
-					'suffix' => $request->suffix
-			])->count();
+			$scholarExist = $this->findMatchedScholarNames($request);
 
 			if(!$scholarExist){
 
@@ -48,11 +43,24 @@ class ScholarController extends validateUserCredentials
 		}
 	}
 
+	public function validateScholarName(Request $request){
+
+			$scholarExist = $this->findMatchedScholarNames($request);
+
+			if(!$scholarExist){
+				
+				return response()->json(['exist'=> false, 'message'=> 'No results found'], 200);
+
+			}
+
+			return response()->json(['exist'=> true, 'message'=> $scholarExist .' data matched'], 200);
+	}
+
 	public function storeNewScholarBySupervisorsApproval(validateScholarsRequest $request)
 	{
 		try {
 
-			$scholarExist = $this->findScholarIfExist($request);
+			$scholarExist = $this->findMatchedScholars($request);
 
 			if(!$scholarExist){
 
@@ -68,27 +76,42 @@ class ScholarController extends validateUserCredentials
 			throw $e;
 		}
 	}
+	
+	private function findMatchedScholarNames($request)
+	{
+		return scholar::where([
+				'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+				'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+				'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
+				'suffix' => $request->suffix
+		])
+		->where('scholar_id', '!=', $request->scholar_id)
+		->count();
+	}
 
-	public function findScholarIfExist($scholar, $request){
-			return scholar::where([
-					'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
-					'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
-					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
-					'suffix' => $request->suffix
-			])
-			->whereJsonContains('mother_details->maiden_name', $scholar->mother_details['maiden_name'])
-			->whereJsonContains('mother_details->middlename', $scholar->mother_details['middlename'])
-			->whereJsonContains('mother_details->firstname', $scholar->mother_details['firstname'])
-			->orWhere(function ($query) use ($request) {
-				$query->where([
-					'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
-					'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
-					'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
-					'suffix' => $request->suffix,
-					'student_id_number' => $request->student_id_number
-				]);
-			})
-			->count();
+	private function findMatchedScholars($scholar, $request)
+	{
+		$mother = $this->sv->makeNullEmptyString($scholar->mother_details);
+		return scholar::where([
+				'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+				'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+				'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
+				'suffix' => $request->suffix
+		])
+		->where('scholar_id', '!=', $request->scholar_id)
+		->whereJsonContains('mother_details->maiden_name', $mother['maiden_name'])
+		->whereJsonContains('mother_details->middlename', $mother['middlename'])
+		->whereJsonContains('mother_details->firstname', $mother['firstname'])
+		->orWhere(function ($query) use ($request) {
+			$query->where([
+				'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
+				'firstname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->firstname),
+				'middlename' => $this->sv->trimAndAcceptLettersSpacesOnly($request->middlename),
+				'suffix' => $request->suffix,
+				'student_id_number' => $request->student_id_number
+			]);
+		})
+		->count();
 	}
 
 	public function updateScholarDetails(validateUpdateScholarsRequest $request)
@@ -122,7 +145,7 @@ class ScholarController extends validateUserCredentials
 
 
 			if($validate){
-				$scholarExist = $this->findScholarIfExist($scholar, $request);
+				$scholarExist = $this->findMatchedScholars($scholar, $request);
 			}
 			
 			if(!$scholarExist){
