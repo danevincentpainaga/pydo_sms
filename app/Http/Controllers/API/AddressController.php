@@ -40,16 +40,12 @@ class AddressController extends Controller
 	    	'municipality' => 'required',
 		]);
 
-        $address = trim(preg_replace('/[^a-z]/i', '', $request->address));
-
-        $result = address::whereRaw("REPLACE(`address`, ' ', '') = ? ", $address )->first();
-
-        if ($result) {
-            return response()->json(["message" => $request->address ." already exist"], 500);
+        if ($this->validateAddress($request)) {
+            return response()->json(["message" => $request->address ." ". $request->municipality . " already exist"], 403);
         }
 
         return address::create([
-            'address'=>  trim(preg_replace('/[^a-z\s.-d]/i', '',$request->address)),
+            'address'=>  trim(preg_replace('/[^a-z\s.-d]/i', '', $request->address)),
             'municipality' => $request->municipality,
         ]);
 
@@ -62,11 +58,23 @@ class AddressController extends Controller
 	    	'municipality' => 'required',
 		]);
 
+        if ($this->validateAddress($request)) {
+            return response()->json(["message" => $request->address ." ". $request->municipality . " already exist"], 403);
+        }
+
     	$add = address::findOrFail($request->address_id);
    		$add->address = $request->address;
    		$add->municipality = $request->municipality;
    		$add->save();
 
    		return $add;
+    }
+
+    private function validateAddress($request){
+        $address = trim(preg_replace('/[^a-z]/i', '', $request->address));
+
+        return address::whereRaw("REPLACE(`address`, ' ', '') = ? ", $address )
+                    ->where('municipality', $request->municipality)
+                    ->first();
     }
 }

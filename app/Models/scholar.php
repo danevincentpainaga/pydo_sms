@@ -12,7 +12,7 @@ class scholar extends Model
     protected $primaryKey = 'scholar_id';
 
     protected $fillable = [
-        'student_id_number', 'lastname', 'firstname', 'middlename','addressId', 'date_of_birth', 'age', 'gender', 'civil_status',
+        'student_id_number', 'lastname', 'firstname', 'middlename', 'suffix', 'addressId', 'date_of_birth', 'age', 'gender', 'civil_status',
         'schoolId', 'courseId', 'section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'contract_id', 'last_renewed', 'sem_year_applied', 'userId',
     ];
 

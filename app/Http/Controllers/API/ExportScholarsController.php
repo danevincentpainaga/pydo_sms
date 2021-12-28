@@ -23,7 +23,7 @@ class ExportScholarsController extends validateUserCredentials
 	public function getScholarsToExport(Request $request)
 	{
 		
-		return (new MultipleSheets(['BELISON', 'SIBALOM']))->download('invoices.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+		// return (new MultipleSheets(['BELISON', 'SIBALOM']))->download('invoices.xlsx', \Maatwebsite\Excel\Excel::XLSX);
 		// $this->excel->store(new MultipleSheets(['BELISON', 'SIBALOM']), 'invoices.xlsx', 'public');
 		// return 'invoices.xlsx';
 		// $wb = [];

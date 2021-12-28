@@ -15,6 +15,25 @@ use DB;
 class ImportScholarsController extends Controller
 {
 
+	public function getScholarsWithCount(Request $request){
+		try {
+			DB::beginTransaction();
+			$count = scholar::where('degree', $request->degree)
+						->where('contract_status', '!=', 'In-Active')
+						->count();
+			$scholars = scholar::where('degree', $request->degree)
+						->where('contract_status', '!=', 'In-Active')
+						->skip((int)$request->page * 2)
+						->take(2)
+						->get();
+			DB::commit();
+		 	return response()->json(['scholars'=> $scholars, 'count'=> $count ], 200);
+		} catch (Exception $e) {
+			DB::rollback();
+			throw new Exception($e);
+		}
+	}
+
 	public function importScholars(Request $request)
 	{
 

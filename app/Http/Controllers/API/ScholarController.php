@@ -175,6 +175,7 @@ class ScholarController extends validateUserCredentials
 			return response()->json(['exist'=> true, 'message'=> 'Scholar already exist'], 422);
 
 		} catch (Exception $e) {
+			DB::rollback();
 			throw $e;
 		}
 	}

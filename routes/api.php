@@ -108,6 +108,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'import'], function () {
 
 		Route::post('importScholars', [ImportScholarsController::class, 'importScholars']);
+		Route::get('getScholarsWithCount', [ImportScholarsController::class, 'getScholarsWithCount']);
 		Route::get('getAllScholars', [ImportScholarsController::class, 'getAllScholars']);
 		Route::get('getAddresses', [ImportScholarsController::class, 'getAddresses']);
 		Route::get('getCourses', [ImportScholarsController::class, 'getCourses']);
