@@ -48,12 +48,12 @@ class ImportScholarsController extends Controller
 		    	return response()->json(['message'=> 'Imported data has '. $request->error ." errors"], 422);	
 		    }
 
-			$imported_scholars = [];
+			// $imported_scholars = [];
 
 			foreach ($request->scholars as $scholars => $scholar) {
 
-				// $scholar['father_details'] = json_encode($scholar['father_details']);
-				// $scholar['mother_details'] = json_encode($scholar['mother_details']);
+				$scholar['father_details'] = json_encode($scholar['father_details']);
+				$scholar['mother_details'] = json_encode($scholar['mother_details']);
 
 				$scholar['contract_status'] = 'Pre-Approved';
 				$scholar['last_renewed'] = $scholar['contract_id'];
@@ -62,12 +62,12 @@ class ImportScholarsController extends Controller
 				$scholar['updated_at'] = now()->toDateTimeString();
 				$scholar['userId'] = Auth::id();
 
-				$imported_scholars[] = $scholar;
+				// $imported_scholars[] = $scholar;
 			}
 
 			DB::disableQueryLog();
 
-			$chunks = array_chunk($imported_scholars, 2000);
+			$chunks = array_chunk($request->scholars, 2000);
 
 			DB::beginTransaction();
 

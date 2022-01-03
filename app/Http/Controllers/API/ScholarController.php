@@ -244,7 +244,42 @@ class ScholarController extends validateUserCredentials
 	}
 
     public function getNotRenewedScholar(Request $request){
-    	return $this->returnedScholars($request, $request->searched_name, "OLD" , ["Pending"], 'lastname', 'ASC', 1, [$request->degree]);
+
+    	if($request->searched_name)
+    	{
+			$accessed_degree = $this->filterScholarDegree([$request->degree]);
+			if ($this->validateDegree($request->degree, $accessed_degree))
+			{
+				$municipalities_access = $this->filteredMunicipality($request->municipality);
+
+				if ($municipalities_access) {
+					$query = scholar::query();
+					$query->whereHas('address', function($query) use ($municipalities_access){
+						if ($municipalities_access[0] != "*") {
+							$query->whereIn('municipality', $municipalities_access );
+						}
+					});
+					$query->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount']);
+					if($request->type === 'Name')
+					{
+						$query->where(DB::raw('CONCAT(lastname," ",firstname, " ",middlename)'), 'LIKE', "{$request->searched_name}%");
+					}
+					else
+					{
+						$query->where('student_id_number', '=', $request->searched_name);
+					}
+					$query->where('scholar_status', 'OLD');
+					$query->where('contract_status', 'Pending');
+					$query->where('degree', '=', $request->degree);
+					$query->orderBy('lastname', 'ASC');
+					return $query->paginate(3);
+				}
+				
+				return response()->json(['message'=> 'UnAuthorized. No municipality access!'], 403);	
+			};
+			return response()->json(['message'=> 'UnAuthorized!'], 403);
+		}
+		return response()->json(['message'=> 'Bad request'], 400);
     }
 
 	private function returnedScholars($request, $searched_name, $scholar_status, $contract_status, $columnToBeOrdered, $orderby, $limit, $accessedDegree = [])
@@ -256,15 +291,11 @@ class ScholarController extends validateUserCredentials
 			$municipalities_access = $this->filteredMunicipality($request->municipality);
 
 			if ($municipalities_access) {
-
 				$query = scholar::query();
-
 				$query->whereHas('address', function($query) use ($municipalities_access){
-
 					if ($municipalities_access[0] != "*") {
 						$query->whereIn('municipality', $municipalities_access );
 					}
-
 				});
 				$query->with(['address', 'school', 'course', 'academicyear_semester_contract:asc_id,semester,academic_year,undergraduate_amount,masteral_doctorate_amount']);
 				$query->whereIn('degree', $accessed_degree);
