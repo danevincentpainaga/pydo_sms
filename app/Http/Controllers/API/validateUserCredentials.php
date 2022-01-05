@@ -32,7 +32,7 @@ class validateUserCredentials Extends Controller
 			return array_values(array_intersect($degree_access, $accessedDegree));
 		}
 			
-		if($degree_access[0] == "*") return ["Undergraduate", "Master", "Doctorate"];
+		if($degree_access[0] == "*") return ["Undergraduate", "Masters", "Doctorate"];
 		
 		return $degree_access;
 

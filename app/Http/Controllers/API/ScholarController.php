@@ -269,7 +269,7 @@ class ScholarController extends validateUserCredentials
 						$query->where('student_id_number', '=', $request->searched_name);
 					}
 					$query->where('scholar_status', 'OLD');
-					$query->where('contract_status', 'Pending');
+					$query->where('contract_status', $request->contract_status);
 					$query->where('degree', '=', $request->degree);
 					$query->orderBy('lastname', 'ASC');
 					return $query->paginate(3);
@@ -365,8 +365,8 @@ class ScholarController extends validateUserCredentials
         return $filename;
     }
 
-    public function renewScholar(Request $request){
-
+    public function renewScholar(Request $request)
+    {
 		$scholar = scholar::findOrFail($request->scholar_id);
 		
 		if($scholar->contract_status == 'Pre-Approved' || $scholar->contract_status == 'Approved'){
@@ -375,11 +375,23 @@ class ScholarController extends validateUserCredentials
 
 		$scholar->contract_status = 'Pre-Approved';
         $scholar->contract_id = $request->contract_id;
-        $scholar->last_renewed = $request->last_renewed;
+        // $scholar->last_renewed = $request->last_renewed;
 		$scholar->save();
 
 		return response()->json(['message'=> 'Scholar renewed'], 200);
 
     }
+
+    public function revertScholar(Request $request)
+    {
+		if($request->isActive == 0){
+			scholar::where('scholar_id', $request->scholar_id)->update(['contract_status'=> 'In-Active']);
+		}else{
+			scholar::where('scholar_id', $request->scholar_id)->update(['contract_status'=> 'Pending']);
+		}
+
+		return response()->json(['message'=> 'Scholar reverted'], 200);
+    }
+
 
 }

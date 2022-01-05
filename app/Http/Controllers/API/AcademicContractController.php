@@ -95,8 +95,10 @@ class AcademicContractController extends Controller
             $contract->contract_state = "Open";
             $contract->save();
             
-            $this->updateStatus($request->ascId);
+            // $this->updateStatus($request->ascId);
 
+            academicyear_semester_contract::findOrFail($request->ascId)->update(['state'=> 'Selected']);
+            scholar::where('contract_status', 'Approved')->update(['contract_status'=> 'Pending']);
             DB::commit();
 
             return response()->json(['message' => 'Contract succesfully set.'], 200);
@@ -110,14 +112,16 @@ class AcademicContractController extends Controller
     }
 
     public function updateStatus($ascId){
-        academicyear_semester_contract::findOrFail($ascId)->update(['state'=> 'Selected']);
-        scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active']);
-        scholar::where('contract_status', 'Approved')->update(['contract_status'=> 'Pending']);
+        // academicyear_semester_contract::findOrFail($ascId)->update(['state'=> 'Selected']);
+        academicyear_semester_contract::findOrFail($ascId)->update(['state'=> 'Closed']);
+        scholar::where('contract_status', 'Pending')->update(['contract_status'=> 'In-Active', 'isActive' => 0]);
+        // scholar::where('contract_status', 'Approved')->update(['contract_status'=> 'Pending']);
+        scholar::where('contract_status', 'Pre-Approved')->update(['last_renewed' => $ascId, 'isActive' => 1, 'contract_status'=> 'Approved']);
     }
 
     public function closeContract()
     {
-
+        // close contract only after 3months for consistency purpose
         DB::beginTransaction();
         try {
 
@@ -128,9 +132,9 @@ class AcademicContractController extends Controller
                 $contract->contract_state = 'Closed';
                 $contract->save();
 
-                academicyear_semester_contract::findOrFail($contract->ascId)->update(['state'=> 'Closed']);
-                scholar::where('contract_status', 'Pre-Approved')->update(['contract_status'=> 'Approved']);
-
+                // academicyear_semester_contract::findOrFail($contract->ascId)->update(['state'=> 'Closed']);
+                // scholar::where('contract_status', 'Pre-Approved')->update(['contract_status'=> 'Approved']);
+                $this->updateStatus($request->ascId);
                 DB::commit();
 
                 return response()->json(['message' => 'Contract Closed'] , 200);

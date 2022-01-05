@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::post('storeNewScholarDetails', [ScholarController::class, 'storeNewScholarDetails']);
 		Route::post('storeNewScholarBySupervisorsApproval', [ScholarController::class, 'storeNewScholarBySupervisorsApproval']);
 		Route::post('renewScholar', [ScholarController::class, 'renewScholar']);
+		Route::post('revertScholar', [ScholarController::class, 'revertScholar']);
 		Route::post('updateScholarDetails', [ScholarController::class, 'updateScholarDetails']);
 		Route::post('uploadProfilePic', [ScholarController::class, 'uploadProfilePic']);
 		Route::get('getNewUndergraduateScholars', [ScholarController::class, 'getNewUndergraduateScholars']);
