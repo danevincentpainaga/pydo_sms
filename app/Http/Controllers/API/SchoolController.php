@@ -11,7 +11,7 @@ class SchoolController extends Controller
 
     public function getListOfSchool(Request $request)
     {
-    	return school::where('school_name', 'LIKE', "%{$request->searched_school}%")->limit(7)->get();
+        return school::where('school_name', 'LIKE', "%{$request->searched_school}%")->limit(7)->get();
     }
 
      public function storeSchoolDetails(Request $request)
@@ -24,15 +24,13 @@ class SchoolController extends Controller
             ]);
 
 
-            $schoolname = trim(preg_replace('/[^a-z-]/i', '', $request->school_name));
-
-            $result = school::whereRaw("REPLACE(`school_name`, ' ', '') = ? ", $schoolname )->first();
-
-            if ($result) {
-                return response()->json(["message" => $request->school_name ." already exist"], 500);
+            if ($this->isExist($request->school_name)) {
+                return response()->json(["message" => $this->trimSchoolName($request->school_name) ." already exist"], 409);
             }
 
-            return school::create([ 'school_name'=>  trim(preg_replace('/[^a-z\s-]/i', '',$request->school_name)) ]);
+            return school::create([
+                'school_name'=>  $this->trimSchoolName($request->school_name)
+            ]);
 
         } catch (Exception $e) {
             throw $e;
@@ -48,11 +46,26 @@ class SchoolController extends Controller
             'school_name' => 'required',
         ]);
 
-        $school = school::findOrFail($request->school_id);
-        $school->school_name = $request->school_name;
-        $school->save();
+        if ($this->isExist($request->school_name)) {
+            return response()->json(["message" => $this->trimSchoolName($request->school_name) ." already exist"], 409);
+        }
+
+        school::where('school_id', $request->school_id)->update([ 'school_name'=> $this->trimSchoolName($request->school_name) ]);
         
-        return $request->all();
+        return response('Success', 200);
+    }
+
+    private function isExist($school_name){
+        $schoolname = trim(preg_replace('/[^a-z\.\-\']/i', '', $school_name), '\'-." "');
+
+        return school::whereRaw("REPLACE(`school_name`, ' ', '') = ? ", $schoolname )->first();
+    }
+
+    private function trimSchoolName($school_name){
+
+        $schoolname = preg_replace(array('/\s+/', '/\s+\'/', '/\'\s+/'), array(" ", "'", "'"), $school_name);
+
+        return trim(preg_replace('/[^a-z\s\.\-\']/i', '', $schoolname), '\'-." "');
     }
 
 }

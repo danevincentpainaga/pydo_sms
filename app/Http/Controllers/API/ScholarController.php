@@ -128,21 +128,6 @@ class ScholarController extends validateUserCredentials
 			if($scholar->firstname.$scholar->middlename.$scholar->lastname != $request->firstname.$request->middlename.$request->lastname || $scholar->student_id_number != $request->student_id_number){
 				$validate = true;
 			}
-			// $rm = $request->mother_details;
-			// $sm = $scholar->mother_details;
-
-			// if($scholar->firstname.$scholar->middlename.$scholar->lastname != $request->firstname.$request->middlename.$request->lastname){
-			// 	$validate = true;
-			// }
-
-			// if($scholar->student_id_number != $request->student_id_number){
-			// 	$validate = true;
-			// }
-
-			// if($rm['firstname'].$rm['middlename'].$rm['maiden_name'] != $sm['firstname'].$sm['middlename'].$sm['maiden_name']){
-			// 	$validate = true;
-			// }
-
 
 			if($validate){
 				$scholarExist = $this->findMatchedScholars($scholar, $request);
@@ -217,15 +202,6 @@ class ScholarController extends validateUserCredentials
 			throw $e;
 		}	
 	}
-
-	// private function makeNullEmptyString($arr){
- //    	foreach ($arr as $key => $value) {
- //    		if(!$value){
- //    			$arr[$key] = "";
- //    		}
- //    	}
- //    	return $arr;
-	// }
 
 	public function getNewUndergraduateScholars(Request $request)
 	{
@@ -351,11 +327,7 @@ class ScholarController extends validateUserCredentials
         return response()->json(["message" => "No FIle"], 500);
 
     }
-
-  //   private function trimAndAcceptLettersSpacesOnly($value){
-		// return trim(preg_replace('/[^a-z\s]/i', '', $value));
-  //   }
-
+    
     private function createFilename(UploadedFile $file)
     {
         $extension = $file->getClientOriginalExtension();
@@ -367,19 +339,9 @@ class ScholarController extends validateUserCredentials
 
     public function renewScholar(Request $request)
     {
-		$scholar = scholar::findOrFail($request->scholar_id);
-		
-		if($scholar->contract_status == 'Pre-Approved' || $scholar->contract_status == 'Approved'){
-			return response()->json(['message'=> 'Scholar is already renewed'], 422);
-		}
-
-		$scholar->contract_status = 'Pre-Approved';
-        $scholar->contract_id = $request->contract_id;
-        // $scholar->last_renewed = $request->last_renewed;
-		$scholar->save();
+    	scholar::where('scholar_id', $request->scholar_id)->update(['contract_status'=> 'Pre-Approved']);
 
 		return response()->json(['message'=> 'Scholar renewed'], 200);
-
     }
 
     public function revertScholar(Request $request)
