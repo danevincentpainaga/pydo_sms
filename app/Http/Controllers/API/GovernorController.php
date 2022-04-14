@@ -36,7 +36,7 @@ class GovernorController extends Controller
 				$governor->save();
 			}
 			else{
-				governor::create(['selected' => 'true', 'governor'=> json_encode($gov) ]);
+				governor::create(['selected' => 'true', 'governor'=> $gov ]);
 			}
 			
 			DB::commit();
