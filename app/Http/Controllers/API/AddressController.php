@@ -72,7 +72,6 @@ class AddressController extends Controller
 
     private function validateAddress($request){
         $address = trim(preg_replace('/[^a-z]/i', '', $request->address));
-
         return address::whereRaw("REPLACE(`address`, ' ', '') = ? ", $address )
                     ->where('municipality', $request->municipality)
                     ->first();

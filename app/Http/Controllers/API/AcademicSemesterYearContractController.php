@@ -55,8 +55,8 @@ class AcademicSemesterYearContractController extends Controller
 
     public function updateAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
     {
+        // Need Revision for amount update
         try {
-
             $res = $this->validateYearSemesterIfExist($request);
 
             if($res > 0){
@@ -69,7 +69,7 @@ class AcademicSemesterYearContractController extends Controller
             $ays_details->undergraduate_amount = $request->undergraduate_amount;
             $ays_details->masteral_doctorate_amount = $request->masteral_doctorate_amount;
             $ays_details->save();
-
+            
             return response()->json(['message'=> 'Update successful!'], 200);
 
         } catch (Exception $e) {

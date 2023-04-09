@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\scholar;
 use App\Models\address;
 use App\Models\course;
+use App\Models\activated_contract;
 use DB;
 
 class ImportScholarsController extends Controller
@@ -36,9 +37,7 @@ class ImportScholarsController extends Controller
 
 	public function importScholars(Request $request)
 	{
-
 		try {
-
 		    $request->validate([
 		        'scholars' => 'required',
 		        'error' => 'required',
@@ -48,26 +47,17 @@ class ImportScholarsController extends Controller
 		    	return response()->json(['message'=> 'Imported data has '. $request->error ." errors"], 422);	
 		    }
 
-			// $imported_scholars = [];
-
-			foreach ($request->scholars as $scholars => $scholar) {
-
-				$scholar['father_details'] = json_encode($scholar['father_details']);
-				$scholar['mother_details'] = json_encode($scholar['mother_details']);
-
-				$scholar['contract_status'] = 'Pre-Approved';
-				$scholar['last_renewed'] = $scholar['contract_id'];
-				$scholar['sem_year_applied'] = $scholar['contract_id'];
-				$scholar['created_at'] = now()->toDateTimeString();
-				$scholar['updated_at'] = now()->toDateTimeString();
-				$scholar['userId'] = Auth::id();
-
-				// $imported_scholars[] = $scholar;
+			$scholar = $request->input('scholars');
+			for ($i=0; $i < COUNT($scholar); $i++) {
+				$scholar[$i]['father_details'] = json_encode($scholar[$i]['father_details']);
+				$scholar[$i]['mother_details'] = json_encode($scholar[$i]['mother_details']);
+				$scholar[$i]['last_renewed'] = $scholar[$i]['contract_id'];
+				$scholar[$i]['sem_year_applied'] = $scholar[$i]['contract_id'];
+				$scholar[$i]['userId'] = Auth::id();
 			}
 
 			DB::disableQueryLog();
-
-			$chunks = array_chunk($request->scholars, 2000);
+			$chunks = array_chunk($scholar, 300);
 
 			DB::beginTransaction();
 
@@ -76,15 +66,12 @@ class ImportScholarsController extends Controller
 			}
 
 			DB::commit();
-
-			return $chunks;
-
+			return response('success', 200);
 
 		} catch (Exception $e) {
 			DB::roolback();
 			throw $e;
 		}
-
 	}
 
 	public function getAllScholars(Request $request){

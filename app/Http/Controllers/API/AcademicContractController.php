@@ -58,7 +58,6 @@ class AcademicContractController extends Controller
     {
         
         try {
-
             $request->validate([
                 'ascId' => 'required',
             ]);
@@ -103,12 +102,10 @@ class AcademicContractController extends Controller
 
             return response()->json(['message' => 'Contract succesfully set.'], 200);
 
-
         } catch (Exception $e) {
             DB::roolback();
             throw $e;
         }
-        
     }
 
     public function updateStatus($ascId){
@@ -124,21 +121,18 @@ class AcademicContractController extends Controller
         // close contract only after 3months for consistency purpose
         DB::beginTransaction();
         try {
-
             $contract = activated_contract::first();
 
             if ($contract && $contract->contract_state == 'Open') {
 
                 $contract->contract_state = 'Closed';
                 $contract->save();
-
                 // academicyear_semester_contract::findOrFail($contract->ascId)->update(['state'=> 'Closed']);
                 // scholar::where('contract_status', 'Pre-Approved')->update(['contract_status'=> 'Approved']);
-                $this->updateStatus($request->ascId);
+                $this->updateStatus($contract->ascId);
                 DB::commit();
 
                 return response()->json(['message' => 'Contract Closed'] , 200);
-
             }
 
             return response()->json(['message' => 'Failed. Contract already closed'] , 400);
@@ -152,10 +146,8 @@ class AcademicContractController extends Controller
 
     public function openContract()
     {
-
         DB::beginTransaction();
         try {
-
             $contract = activated_contract::first();
 
             if ($contract->contract_state == 'Closed') { 
@@ -166,7 +158,6 @@ class AcademicContractController extends Controller
                 DB::commit();
 
                 return response()->json(['message' => 'Contract opened'] , 200);
-
             }
 
             return response()->json(['message' => 'Contract already opened'] , 400); 
@@ -175,7 +166,5 @@ class AcademicContractController extends Controller
             DB::roolback();
             throw $e;
         }
-
     }
-
 }

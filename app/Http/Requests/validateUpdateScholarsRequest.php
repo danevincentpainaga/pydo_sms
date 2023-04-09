@@ -24,7 +24,7 @@ class validateUpdateScholarsRequest extends FormRequest
     public function rules()
     {
         return [
-         'scholar_id'=> 'required',
+            'scholar_id'=> 'required',
             'student_id_number' => 'required',
             'lastname' => 'required',
             'firstname' => 'required',

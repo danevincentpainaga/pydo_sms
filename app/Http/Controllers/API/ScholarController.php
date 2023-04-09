@@ -134,7 +134,6 @@ class ScholarController extends validateUserCredentials
 			}
 			
 			if(!$scholarExist){
-		        
 		        $scholar->student_id_number = $request->student_id_number;
 		        $scholar->degree = $request->degree;
 		        $scholar->lastname = $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname);
@@ -152,11 +151,9 @@ class ScholarController extends validateUserCredentials
 		        $scholar->civil_status = $request->civil_status;
 		        $scholar->IP = $request->IP;
 		        $scholar->save();
-
 		        DB::commit();
 				return $scholar->updated_at;
 			}
-
 			return response()->json(['exist'=> true, 'message'=> 'Scholar already exist'], 422);
 
 		} catch (Exception $e) {
@@ -168,8 +165,6 @@ class ScholarController extends validateUserCredentials
 	private function saveDetails($request)
 	{
 		try {
-
-
 			return scholar::create([
 		        'student_id_number' => $request->student_id_number,
 		        'lastname' => $this->sv->trimAndAcceptLettersSpacesOnly($request->lastname),
@@ -195,7 +190,6 @@ class ScholarController extends validateUserCredentials
 		        'last_renewed' => $request->asc_id,
 		        'sem_year_applied' => $request->asc_id,
 		        'userId' => Auth::id()
-
 			]);
 
 		} catch (Exception $e) {
@@ -297,35 +291,24 @@ class ScholarController extends validateUserCredentials
         if ($request->hasFile('file')) {
 
         	$file = $request->file('file');
-
         	$fileName = $this->createFilename($file);
-
         	$mime = str_replace('/', '-', $file->getMimeType());
         	$dateFolder = date("Y-m-W");
-
             $filePath = "upload/{$mime}/{$dateFolder}/";
-
             $finalPath = storage_path("app/public/".$filePath);
-
             $file->move($finalPath, $fileName);
-
-
 
             if ($fileName) {
             	$scholar = scholar::findOrFail($request->scholar_id);
             	$oldfile = $scholar->photo;
             	$scholar->photo = $filePath . $fileName;
             	$scholar->save();
-
             	File::delete(storage_path("app/public/".$oldfile));
             }
-
-
 	        return $scholar->photo;
         }
 
         return response()->json(["message" => "No FIle"], 500);
-
     }
     
     private function createFilename(UploadedFile $file)
@@ -333,14 +316,12 @@ class ScholarController extends validateUserCredentials
         $extension = $file->getClientOriginalExtension();
         $filename = str_replace([" ", ".".$extension], "", $file->getClientOriginalName()); 
         $filename .= "_" . md5(time()) . "." . $extension;
-
         return $filename;
     }
 
     public function renewScholar(Request $request)
     {
     	scholar::where('scholar_id', $request->scholar_id)->update(['contract_status'=> 'Pre-Approved']);
-
 		return response()->json(['message'=> 'Scholar renewed'], 200);
     }
 
@@ -351,9 +332,6 @@ class ScholarController extends validateUserCredentials
 		}else{
 			scholar::where('scholar_id', $request->scholar_id)->update(['contract_status'=> 'Pending']);
 		}
-
 		return response()->json(['message'=> 'Scholar reverted'], 200);
     }
-
-
 }
