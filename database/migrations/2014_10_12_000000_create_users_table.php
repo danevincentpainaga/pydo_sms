@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->text('municipal_access');
             $table->text('degree_access');
             $table->string('user_type');
-            $table->string('status');
+            $table->boolean('status')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

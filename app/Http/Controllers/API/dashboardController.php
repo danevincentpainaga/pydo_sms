@@ -70,16 +70,14 @@ class dashboardController extends Controller
 
 	public function getContractStatusTotalPerDegree()
 	{
-	 	$total_count = DB::select(
-	 						DB::raw("SELECT degree,
-		 								SUM(CASE WHEN contract_status = 'Pre-Approved' THEN 1 ELSE 0 END) pre_approved,
-		 								SUM(CASE WHEN contract_status = 'Approved' THEN 1 ELSE 0 END) approved,
-		 								SUM(CASE WHEN contract_status = 'Pending' THEN 1 ELSE 0 END) pending,
-		 								SUM(CASE WHEN contract_status = 'In-Active' THEN 1 ELSE 0 END) in_active
-		 								FROM scholars GROUP BY degree"
-	 								)
-	 							);
-
+		$total_count = DB::select("SELECT degree,
+			SUM(CASE WHEN contract_status = 'Pre-Approved' THEN 1 ELSE 0 END) pre_approved,
+			SUM(CASE WHEN contract_status = 'Approved' THEN 1 ELSE 0 END) approved,
+			SUM(CASE WHEN contract_status = 'Pending' THEN 1 ELSE 0 END) pending,
+			SUM(CASE WHEN contract_status = 'In-Active' THEN 1 ELSE 0 END) in_active
+			FROM scholars GROUP BY degree"
+		);
+		
 		return $total_count;
 	}
 

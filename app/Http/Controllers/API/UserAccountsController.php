@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 
 class UserAccountsController extends Controller
@@ -29,29 +30,36 @@ class UserAccountsController extends Controller
                     ->get();
     }
 
-    public function createUsersAccount(Request $request){
+    public function createUsersAccount(Request $request) {
+        try {
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|unique:users',
+                'password' => 'required|string|min:3',
+                'municipal_access' => 'required|array|min:1',
+                'degree_access' => 'required|array|min:1',
+                'user_type' => 'required|string',
+                'status' => 'required|integer|min:1|max:1|digits_between:0,1',
+            ]);
 
-        $attr = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
-            'password' => 'required|string|min:3',
-            'municipal_access' => 'required|array|min:1',
-            'degree_access' => 'required|array|min:1',
-            'user_type' => 'required|string',
-            'status' => 'required|string',
-        ]);
+            if ($validator->fails()) {
+                return response('Invalid inputs', 400);
+            }
 
-        $user = User::create([
-            'name' => $attr['name'],
-            'email' => $attr['email'],
-            'password' => bcrypt($attr['password']),
-            'municipal_access' => json_encode($attr['municipal_access']),
-            'degree_access' => json_encode($attr['degree_access']),
-            'user_type' => $attr['user_type'],
-            'status' => $attr['status']
-        ]);
-
-        return response()->json(['success'=> 'User created'], 200);
+            $user = User::create([
+                'name' => $validator['name'],
+                'email' => $validator['email'],
+                'password' => bcrypt($validator['password']),
+                'municipal_access' => $validator['municipal_access'],
+                'degree_access' => $validator['degree_access'],
+                'user_type' => $validator['user_type'],
+                'status' => $validator['status']
+            ]);
+    
+            return response()->json(['success'=> 'User created'], 200);
+        } catch (\Throwable $ex) {
+            throw $ex;
+        }
     }
 
 }

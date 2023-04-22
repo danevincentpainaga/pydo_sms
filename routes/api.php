@@ -29,13 +29,13 @@ use App\Http\Controllers\API\GovernorController;
 */
 
 Route::post('login', [AuthController::class, 'login']);
-// Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAccount']);
+Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAccount']);
 
 // Route::get('login',function(){
 // 	return abort(404);
 // });
 
-Route::middleware('auth:sanctum')->group(function () {
+// Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'scholars'], function () {
 
@@ -142,7 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	});
 
 
-	Route::get('export/getScholarsToExport', [ExportScholarsController::class, 'getScholarsToExport']);
+	Route::get('export/exportScholarsExcel', [ExportScholarsController::class, 'exportScholarsExcel']);
 
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
 	
@@ -157,4 +157,4 @@ Route::middleware('auth:sanctum')->group(function () {
 		return Auth::user()->degree_access;
 	});
 
-});
+// });
