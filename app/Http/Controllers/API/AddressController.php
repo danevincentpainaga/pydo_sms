@@ -13,10 +13,10 @@ class AddressController extends Controller
     public function getAddresses(Request $request){
         try {
             
-            $municipalAccess = json_decode(Auth::user()->municipal_access);
+            $municipalAccess = Auth::user()->municipal_access;
 
             if ($municipalAccess[0] == "*") {
-                return address::where('address', 'LIKE', "{$request->searched}%")
+                return address::where('brgy', 'LIKE', "{$request->searched}%")
                         ->orWhere('municipality', 'LIKE', "{$request->searched}%")
                         ->take(10)
                         ->get();

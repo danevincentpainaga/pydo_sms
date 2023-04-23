@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\API\ExportScholars;
-// use Maatwebsite\Excel\Excel;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Common\Entity\Row;
@@ -101,20 +100,15 @@ class ExportScholarsController extends validateUserCredentials
 	// 	return $result;
 	// }
 
-	// protected function getDegree(){
+	protected function getDegree(){
 
-	// 	$degree_access = json_decode(Auth::user()->degree_access);
+		$degree_access = Auth::user()->degree_access;
 
-	// 	if($degree_access[0] == "*") return ["Undergraduate", "Master", "Doctorate"];
+		if($degree_access[0] == "*") return ["Undergraduate", "Master", "Doctorate"];
 
-	// 	return $degree_access;
+		return $degree_access;
 		
-	// }
-
-	// public function export() 
-	// {
-	//     return Excel::download(new scholarsExport, 'invoices.xlsx');
-	// }
+	}
 
 	public function exportScholarsExcel(Request $request) {
 		
@@ -154,7 +148,7 @@ class ExportScholarsController extends validateUserCredentials
 		$query->join('courses', 'courses.course_id', '=', 'scholars.courseId');
 		$query->join('academicyear_semester_contracts', 'academicyear_semester_contracts.asc_id', '=', 'scholars.last_renewed');
 		$query->select('lastname', 'firstname', 'middlename', 'date_of_birth', 'age', 'gender',
-				DB::RAW('CONCAT(address," ",municipality,", ANTIQUE") AS address'), 'school_name AS school', 'student_id_number',
+				DB::RAW('CONCAT(brgy," ",municipality,", ANTIQUE") AS address'), 'school_name AS school', 'student_id_number',
 				DB::RAW('"Undergraduate" AS degree'), 'course', 'section', 'year_level',
 			DB::raw(
 				"JSON_UNQUOTE(JSON_EXTRACT(father_details, '$.firstname')) AS father_firstname,
@@ -165,7 +159,7 @@ class ExportScholarsController extends validateUserCredentials
 				 JSON_UNQUOTE(JSON_EXTRACT(mother_details, '$.maiden_name')) AS mother_maiden_name"
 			)
 		);
-		// return $query->get();
+
 		$query->orderBy('lastname')->chunk(1, function ($scholars) use (&$writer) {
 			$border = new Border(
 				new BorderPart(Border::BOTTOM, Color::BLACK, Border::WIDTH_THIN, Border::STYLE_SOLID),
@@ -182,7 +176,6 @@ class ExportScholarsController extends validateUserCredentials
 			$writer->addRows(json_decode(json_encode($scholars), true), $style);
 		});
 
-		
 		return response()->download(storage_path('app/templates/'. $file_name), $file_name, [
 			'Content-Type' => 'application/vnd.ms-excel',
 			'Content-Disposition' => 'attachment; filename=scholars_list.xlsx'

@@ -45,8 +45,10 @@ class CreateScholarsTable extends Migration
             $table->foreign('last_renewed')->references('asc_id')->on('academicyear_semester_contracts');
             $table->bigInteger('sem_year_applied')->unsigned();
             $table->foreign('sem_year_applied')->references('asc_id')->on('academicyear_semester_contracts');
-            $table->bigInteger('userId')->unsigned();
-            $table->foreign('userId')->references('id')->on('users');
+            $table->bigInteger('created_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('updated_by')->references('id')->on('users');
             $table->boolean('isActive')->default(1);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

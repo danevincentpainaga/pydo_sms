@@ -15,8 +15,16 @@ class CreateGovernorsTable extends Migration
     {
         Schema::create('governors', function (Blueprint $table) {
             $table->bigIncrements('governor_id');
-            $table->string('selected')->unique();
-            $table->string('governor');
+            $table->boolean('selected', 1)->default(0);
+            $table->string('firstname');
+            $table->string('mi', 1);
+            $table->string('suffix', 5)->nullable();
+            $table->string('lastname');
+            $table->bigInteger('created_by')->unsigned();
+            $table->bigInteger('updated_by')->unsigned();
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('updated_by')->references('id')->on('users');
+            $table->timestamps();
         });
     }
 

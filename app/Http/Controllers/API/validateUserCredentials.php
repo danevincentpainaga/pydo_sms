@@ -10,7 +10,7 @@ class validateUserCredentials Extends Controller
 	protected function filteredMunicipality($municipality){
 
 		if (!$municipality || $municipality == "Municipality") {
-			return json_decode(Auth::user()->municipal_access);
+			return Auth::user()->municipal_access;
 		}
 
 		return [$municipality];
@@ -24,7 +24,7 @@ class validateUserCredentials Extends Controller
 
 	protected function filterScholarDegree($accessedDegree){
 
-		$degree_access = json_decode(Auth::user()->degree_access);
+		$degree_access = Auth::user()->degree_access;
 		
 		if ($accessedDegree) {
 			if($degree_access[0] == "*") return $accessedDegree;

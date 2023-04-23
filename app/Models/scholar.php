@@ -13,7 +13,8 @@ class scholar extends Model
 
     protected $fillable = [
         'student_id_number', 'lastname', 'firstname', 'middlename', 'suffix', 'addressId', 'date_of_birth', 'age', 'gender', 'civil_status',
-        'schoolId', 'courseId', 'section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status', 'contract_id', 'last_renewed', 'sem_year_applied', 'userId',
+        'schoolId', 'courseId', 'section', 'year_level', 'IP', 'father_details', 'mother_details', 'photo', 'degree', 'scholar_status', 'contract_status',
+        'contract_id', 'last_renewed', 'sem_year_applied', 'created_by', 'updated_by'
     ];
 
     protected $casts = [

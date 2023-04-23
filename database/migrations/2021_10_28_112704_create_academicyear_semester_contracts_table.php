@@ -17,7 +17,7 @@ class CreateAcademicyearSemesterContractsTable extends Migration
             $table->bigIncrements('asc_id');
             $table->string('semester');
             $table->string('academic_year');
-            $table->string('state');
+            $table->string('state', 10);
             $table->integer('undergraduate_amount');
             $table->integer('masteral_doctorate_amount');
             $table->timestamps();

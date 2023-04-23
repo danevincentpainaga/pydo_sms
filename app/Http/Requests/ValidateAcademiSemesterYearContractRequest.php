@@ -26,9 +26,7 @@ class ValidateAcademiSemesterYearContractRequest extends FormRequest
     {
         return [
             'semester' => 'required',
-            'academic_year' => 'required',
-            'undergraduate_amount' => 'required',
-            'masteral_doctorate_amount' => 'required',
+            'academic_year' => 'required'
         ];
     }
 }

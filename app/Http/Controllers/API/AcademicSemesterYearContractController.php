@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\ValidateAcademiSemesterYearContractRequest;
 use App\Models\academicyear_semester_contract;
 use DB;
@@ -15,7 +16,7 @@ class AcademicSemesterYearContractController extends Controller
     	return academicyear_semester_contract::all();
     }
 
-    public function storeAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
+    public function storeAcademicYearSem(ValidateAcademiSemesterYearContractRequest $request)
     {
         try {
             
@@ -53,7 +54,7 @@ class AcademicSemesterYearContractController extends Controller
         }
     }
 
-    public function updateAcademicYearList(ValidateAcademiSemesterYearContractRequest $request)
+    public function updateAcademicYearSem(ValidateAcademiSemesterYearContractRequest $request)
     {
         // Need Revision for amount update
         try {
@@ -66,8 +67,6 @@ class AcademicSemesterYearContractController extends Controller
             $ays_details = academicyear_semester_contract::findOrFail($request->asc_id);
             $ays_details->semester = $request->semester;
             $ays_details->academic_year = $request->academic_year;
-            $ays_details->undergraduate_amount = $request->undergraduate_amount;
-            $ays_details->masteral_doctorate_amount = $request->masteral_doctorate_amount;
             $ays_details->save();
             
             return response()->json(['message'=> 'Update successful!'], 200);
@@ -75,6 +74,24 @@ class AcademicSemesterYearContractController extends Controller
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    public function updateAcademicYearSemAmounts(Request $request) {
+
+        $validator = Validator::make($request->all(), [
+            'undergraduate_amount' => 'required',
+            'masteral_doctorate_amount' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message'=> 'Failed'], 400);
+        }
+
+        $ays_details = academicyear_semester_contract::findOrFail($request->asc_id);
+        $ays_details->undergraduate_amount = $request->undergraduate_amount;
+        $ays_details->masteral_doctorate_amount = $request->masteral_doctorate_amount;
+        $ays_details->save();
+        return response()->json(['message'=> 'Update successful!'], 200);    
     }
 
     public function validateYearSemesterIfExist($request){

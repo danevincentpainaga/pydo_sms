@@ -35,7 +35,7 @@ Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAc
 // 	return abort(404);
 // });
 
-// Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'scholars'], function () {
 
@@ -90,9 +90,9 @@ Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAc
 	Route::group(['prefix' => 'academic'], function () {
 
 		Route::get('getAcademicYearList', [AcademicSemesterYearContractController::class, 'getAcademicYearList']);
-		Route::post('storeAcademicYearList', [AcademicSemesterYearContractController::class, 'storeAcademicYearList'])->middleware('admin_access');
-		Route::post('updateAcademicYearList', [AcademicSemesterYearContractController::class, 'updateAcademicYearList'])->middleware('admin_access');
-		
+		Route::post('storeAcademicYearSem', [AcademicSemesterYearContractController::class, 'storeAcademicYearSem'])->middleware('admin_access');
+		Route::post('updateAcademicYearSem', [AcademicSemesterYearContractController::class, 'updateAcademicYearSem'])->middleware('admin_access');
+		Route::post('updateAcademicYearSemAmounts', [AcademicSemesterYearContractController::class, 'updateAcademicYearSemAmounts'])->middleware('admin_access');
 	});
 
 
@@ -147,7 +147,7 @@ Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAc
 	Route::get('getMunicipalities', [MunicipalitiesController::class, 'getMunicipalities']);
 	
 	
-	Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
+	// Route::get('getAuthenticatedUser', [AuthController::class, 'getAuthenticatedUser']);
 	Route::post('confirmIsAdminAccess', [AuthController::class, 'isAdminAccess']);
 	Route::post('supervisorsApproval', [AuthController::class, 'validateSupervisorCredentials']);
 	Route::post('logout', [AuthController::class, 'logout']);
@@ -157,4 +157,4 @@ Route::post('createUsersAccount', [UserAccountsController::class, 'createUsersAc
 		return Auth::user()->degree_access;
 	});
 
-// });
+});

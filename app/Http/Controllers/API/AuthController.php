@@ -17,6 +17,7 @@ class AuthController extends Controller
 		try {
 		    DB::connection()->getPdo();
 		} catch (\Exception $e) {
+            \Log::error($e);
 		    return response()->json(['error' => 'No database connection'], 500);
 		}
     
@@ -33,18 +34,19 @@ class AuthController extends Controller
 
 	    $success = $user->createToken('pydo_appKey')->plainTextToken;
 
-		return response()->json(['token'=>$success], 200);
+		return response()->json(['token'=>$success, 'user'=> $user], 200);
     }
 
-    public function getAuthenticatedUser(){
-		try {
-		    DB::connection()->getPdo();
-		} catch (\Exception $e) {
-		    return response()->json(['error' => 'Connection lost'], 500);
-		}
+    // public function getAuthenticatedUser(){
+	// 	try {
+	// 	    DB::connection()->getPdo();
+	// 	} catch (\Exception $e) {
+	// 		\Log::error($e);
+	// 	    return response()->json(['error' => 'Connection lost'], 500);
+	// 	}
     
-    	return Auth::user();
-    }
+    // 	return Auth::user();
+    // }
 
     public function logout(Request $request){
     	return $request->user()->currentAccessToken()->delete();
@@ -54,14 +56,11 @@ class AuthController extends Controller
 	    if (!Hash::check($request->password, Auth::user()->password)) {
 			return response()->json(['message'=> 'Incorrect password'], 403 );
 	    }
-
 		return true;
     }
 
     public function validateSupervisorCredentials(Request $request){
-
     	try {
-
 		    $request->validate([
 		        'email' => 'required|email',
 		        'password' => 'required',
@@ -76,6 +75,7 @@ class AuthController extends Controller
 			return response()->json(['message'=> 'Success'], 200);
 
     	} catch (Exception $e) {
+            \Log::error($e);
     		throw $e;
     	}
     }

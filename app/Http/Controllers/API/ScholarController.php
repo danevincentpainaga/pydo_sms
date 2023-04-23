@@ -189,7 +189,8 @@ class ScholarController extends validateUserCredentials
 		        'contract_id' => $request->contract_id,
 		        'last_renewed' => $request->asc_id,
 		        'sem_year_applied' => $request->asc_id,
-		        'userId' => Auth::id()
+		        'created_by' => Auth::id(),
+				'updated_by' => Auth::id(),
 			]);
 
 		} catch (Exception $e) {

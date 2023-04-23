@@ -13,7 +13,7 @@ class MunicipalitiesController extends Controller
     	try {
     		
 	    	$municipalities = array();
-	    	$municipal_access = json_decode(Auth::user()->municipal_access);
+	    	$municipal_access = Auth::user()->municipal_access;
 
 			if ($municipal_access[0] == "*") {
 
