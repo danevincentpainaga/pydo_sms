@@ -13,7 +13,7 @@ class AcademicSemesterYearContractController extends Controller
 {
     public function getAcademicYearList()
     {
-    	return academicyear_semester_contract::all();
+    	return academicyear_semester_contract::orderBy('asc_id', 'desc')->get();
     }
 
     public function storeAcademicYearSem(ValidateAcademiSemesterYearContractRequest $request)

@@ -22,14 +22,16 @@ class UserAccountsController extends Controller
                             ->orWhere('id', Auth::id())
                             ->where('name', 'LIKE', "{$request->searched}%")
                             ->where('user_type', '=', "Admin")
-                            ->get();
+                            ->get()
+                            ->makeVisible('email');
                 }
                 return User::whereIn('user_type', ['Admin', 'User'])
                             ->where('name', 'LIKE', "{$request->searched}%")
                             ->orWhere('id', Auth::id())
                             ->where('name', 'LIKE', "{$request->searched}%")
                             ->where('user_type', '=', "SuperAdmin")
-                            ->get();
+                            ->get()
+                            ->makeVisible('email');
         } catch (\Throwable $ex) {
             \Log::error($ex);
             throw $ex;
